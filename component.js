@@ -1,4 +1,3 @@
-(function() {
 	window.Component = function(c, e) {
 		var self = this;
 		c = Component.normalize(c);
@@ -24,7 +23,7 @@
 		.then(this.render.bind(this))
 		.catch(function(err) {
 			throw err;
-		})
+		});
 	};
 
 	Component.prototype.findOne = function(selector) {
@@ -63,6 +62,8 @@
 		*/
 	};
 
+	/*
+
 	Component.prototype.renderHTML = function() {
 		var html = this.html;
 		html = Component.repl(html, this);
@@ -73,7 +74,7 @@
 		var root = el || this.element;
 		var repeatEl = root.querySelector('[repeat]');
 
-		var model = model || this;
+		model = model || this;
 
 		while(repeatEl) {
 			var repeatStr = repeatEl.getAttribute('repeat');
@@ -115,7 +116,7 @@
 		var regex = /{([^{}|]+)}/;
 		var regexG = /{([^{}|]+)}/g;
 
-		var m = str.match(regexG)
+		var m = str.match(regexG);
 		if(!m)
 			return str;
 
@@ -141,17 +142,18 @@
 
 		return str;
 	};
+	*/
 
 	Component.prototype.checkRequirement = function(name) {
 		var p = new Promise();
 
-		if(CFW.hasComponent(name)) {
+		if(window.CFW.hasComponent(name)) {
 			p.resolve();
 		}
 		else {
-			CFW.loadComponent(name)
+			window.CFW.loadComponent(name)
 			.then(p.resolve)
-			.catch(p.reject)
+			.catch(p.reject);
 		}
 
 		return p;
@@ -174,13 +176,13 @@
 		while(!el.component)
 			el = el.parentNode;
 		return el.component;
-	}
+	};
 
 	Component.getComponent = function(el) {
 		while(!el.component)
 			el = el.parentNode;
 		return el.component;
-	}
+	};
 
 	Component.normalize = function(c) {
 		if(!c.name) throw "Component needs a name";
@@ -191,4 +193,3 @@
 
 		return c;
 	};
-})();

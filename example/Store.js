@@ -1,7 +1,7 @@
 window.Store = {
 	listeners: [],
 
-	todos: JSON.parse(localStorage['todos']),
+	todos: localStorage.todos ? JSON.parse(localStorage['todos']) : [],
 
 	update: function() {
 		localStorage['todos'] = JSON.stringify(this.todos);

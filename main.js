@@ -1,4 +1,3 @@
-(function() {
 	window.CFW = {
 
 		components: [],
@@ -46,13 +45,6 @@
 			this.components.forEach(function(c) {
 				this.initComponent(c, el);
 			}.bind(this));
-			/*
-			this.components.forEach(function(c) {
-				Array.prototype.forEach.call(el.querySelectorAll(c.name), function(e) {
-					new Component(c, e);
-				});
-			});
-			*/
 		},
 
 		initComponent: function(c, el) {
@@ -71,7 +63,10 @@
 		},
 
 		loadComponent: function(name) {
-			return this.options.componentProvider(name)
+			return this.options.componentProvider(name);
 		},
 	};
-})();
+
+	if(window.require && window.module && window.module.exports) {
+		module.exports = CFW;
+	}

@@ -1,8 +1,6 @@
-(function() {
-	window.Renderer = function Renderer() {
+	CFWRenderer = function Renderer() {
 
 		var r = {
-			//tag: /<(.*?)>/,
 			tag: /<([^>]*?(?:(?:('|")[^'"]*?\2)[^>]*?)*)>/,
 			repeat: /repeat=["|'].+["|']/,
 			type: /[\s|/]*(.*?)[\s|\/|>]/,
@@ -13,8 +11,6 @@
 		function parse(html, root) {
 			root = root || {html: null, parent: null, children: []};
 
-			//var m = html.match(r.tag);
-			//while(m && m.length) {
 			var m;
 			while((m = r.tag.exec(html)) !== null) {
 				//------- found some text before next tag
@@ -74,7 +70,7 @@
 					var name = m[1];
 					var indexName;
 					if(name.indexOf(',') > -1) {
-						var names = name.split(',')
+						var names = name.split(',');
 						name = names[0].trim();
 						indexName = names[1].trim();
 					}
@@ -227,4 +223,3 @@
 			}
 		};
 	};
-})();

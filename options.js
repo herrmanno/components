@@ -1,9 +1,7 @@
-(function() {
-
-	CFWOptions = function(opt) {
+	var CFWOptions = function(opt) {
 		opt = opt || {};
 
-		this.renderer = opt.renderer || Renderer();
+		this.renderer = opt.renderer || CFWRenderer();
 
 		this.componentProvider = opt.componentProvider || function(name) {
 			var p = new Promise();
@@ -48,5 +46,3 @@
 		};
 
 	};
-
-})();
