@@ -111,10 +111,6 @@
 			return root;
 		}
 
-		function render(root, model) {
-			return root;
-		}
-
 		function domToString(root, indent) {
 			indent = indent || 0;
 			var html = '';
@@ -209,13 +205,13 @@
 
 		return {
 			'render': function(component) {
+				if(typeof component.html === 'boolean' && !component.html)
+					return;
+
 				var html = component.html;
 
 				var root = parse(html).root;
 				root = renderRepeat(root, component);
-				root = render(root);
-
-				//TODO handle original innerHTML
 
 				html = domToString(root, -1);
 
