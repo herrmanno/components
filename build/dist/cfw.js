@@ -494,10 +494,15 @@
 
 		this.properties.forEach(this.grabProperty.bind(this));
 
+		var inited;
 		if(this.init)
-			this.init.call(this);
+			inited = this.init.call(this);
 
-		Promise.all(this.requires.map(this.checkRequirement.bind(this)))
+		var wait = this.requires.map(this.checkRequirement.bind(this));
+		if(inited instanceof Promise)
+			wait.push(inited);
+
+		Promise.all(wait)
 		.then(this.render.bind(this))
 		.catch(function(err) {
 			throw err;
