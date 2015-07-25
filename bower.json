@@ -1,0 +1,25 @@
+{
+  "name": "ho-components",
+  "version": "0.0.0",
+  "homepage": "https://github.com/herrmanno/components",
+  "authors": [
+    "oliverherrmann <o.herrmann92@googlemail.com>"
+  ],
+  "description": "Tiny Html-Component Framework",
+  "main": "main.js",
+  "keywords": [
+    "HTML",
+    "Component"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "devDependencies": {
+    "ho-promise": "*"
+  }
+}
