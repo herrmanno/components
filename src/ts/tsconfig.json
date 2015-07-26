@@ -1,0 +1,34 @@
+{
+    "version": "1.5.0-beta",
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "outDir": "../js",
+        "sourceMap": true,
+        "inlineSourceMap": true,
+        "inlineSources": true,
+        "declaration": true,
+        "noEmitOnError": false,
+        "isolatedModules": false,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "noImplicitAny": false,
+        "removeComments": false,
+        "noLib": false,
+        "preserveConstEnums": true,
+        "suppressImplicitAnyIndexErrors": true
+    },
+    "filesGlob": [
+        "./**/*.ts",
+        "./**/*.tsx",
+        "!./node_modules/**/*"
+    ],
+    "files": [
+        "./components.ts",
+        "./componentsprovider.ts",
+        "./htmlprovider.ts",
+        "./options.ts",
+        "./registry.ts",
+        "./renderer.ts"
+    ]
+}

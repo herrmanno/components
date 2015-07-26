@@ -13,8 +13,8 @@
 
 			var m;
 			while((m = r.tag.exec(html)) !== null) {
-				//------- found some text before next tag
 				var tag, type, closing, selfClosing, repeat, unClose;
+				//------- found some text before next tag
 				if(m.index !== 0) {
 					tag = html.match(r.text)[0];
 					tag = tag.substr(0, tag.length-1);

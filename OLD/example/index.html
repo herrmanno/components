@@ -3,14 +3,20 @@
 		<link rel="stylesheet" href="main.css" >
 
 		<script type="text/javascript" src="store.js"></script>
-		<script src="../bower_components/ho-promise/dist/promise.js" charset="utf-8"></script>
-		<script type="text/javascript" src="../dist/components.js"></script>
+		<script type="text/javascript" src="../build/dist/cfw.min.js"></script>
+		<script type="text/javascript" src="components/MyHeader.js"></script>
 		<script type="text/javascript" src="components/app.js"></script>
 	</head>
 	<body>
+		<MyHeader>
+			<h1>Header</h1>
+			<h3>Yeah!</h3>
+		</MyHeader>
+
+		<App username="new user"></App>
+
 		<script type="text/javascript">
-			ho.components.Component.register(App);
-			ho.components.Component.run();
+			CFW.run();
 		</script>
 	</body>
 </html>

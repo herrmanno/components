@@ -1,0 +1,7 @@
+App TodoBox {
+	top: 15%;
+	left: 25%;
+	width: 50%;
+	position: absolute;
+	border: 1px solid black;
+}

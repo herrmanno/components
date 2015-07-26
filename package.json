@@ -1,0 +1,29 @@
+{
+  "name": "components",
+  "version": "0.0.0",
+  "description": "### TODO",
+  "main": "dist/components.js",
+  "directories": {
+    "example": "example"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/herrmanno/components.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/herrmanno/components/issues"
+  },
+  "homepage": "https://github.com/herrmanno/components",
+  "devDependencies": {
+    "gulp": "^3.9.0",
+    "gulp-typescript": "^2.8.0",
+    "gulp-rename": "^1.2.2",
+    "delete": "^0.2.1",
+    "gulp-uglify": "^1.2.0"
+  }
+}
