@@ -5,9 +5,9 @@
 module ho.components {
 
     export class RegistryOptions {
-        htmlProvider: HtmlProvider;
-        componentProvider: ComponentProvider;
-        renderer: Renderer;
+        htmlProvider: HtmlProvider = new HtmlProvider();
+        componentProvider: ComponentProvider = new ComponentProvider();
+        renderer: Renderer = new Renderer();
 
         constructor(opt?: any) {
             if (opt) {

@@ -3,14 +3,15 @@ var del = require('delete');
 var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var typescript = require('gulp-typescript');
+var sourcemap = require('gulp-sourcemaps');
 
 
 var src = {
     ts: ['src/ts/**/*.ts'],
     js: ['src/js/**/*.js']
-}
+};
 
-var name = 'ho-components'
+var name = 'ho-components';
 
 var dist = 'dist';
 
@@ -19,16 +20,16 @@ var entry = 'components.js';
 
 gulp.task('clean', function() {
     del.sync(dist);
-})
+});
 
 gulp.task('package', ['clean'], function() {
     gulp.src('src/ts/components.ts')
+    .pipe(sourcemap.init())
     .pipe(typescript({
         out: entry,
-        sourceMap: true,
-        inlineSourceMap: true,
-        inlineSources: true
+        sourceMap: true
     }))
+    .pipe(sourcemap.write())
     .pipe(gulp.dest(dist));
 
     /*
@@ -53,4 +54,4 @@ gulp.task('def', function() {
 });
 
 
-gulp.task('default', ['mini', 'def'], null);
+gulp.task('default', ['mini'], null);

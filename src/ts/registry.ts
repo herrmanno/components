@@ -12,6 +12,10 @@ module ho.components {
             this.options = new RegistryOptions(options);
         }
 
+        public setOptions(options?: any) {
+            this.options = new RegistryOptions(options);
+        }
+
         public register(c: typeof Component): void {
             this.components.push(c);
             document.createElement(c.name);
@@ -25,7 +29,7 @@ module ho.components {
 
         public initComponent(component: typeof Component, element:HTMLElement|Document=document): void {
             Array.prototype.forEach.call(element.querySelectorAll(component.name), function(e) {
-				new component(e);
+				new component(e)._init();
 			});
         }
 

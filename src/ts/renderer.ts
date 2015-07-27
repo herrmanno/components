@@ -1,12 +1,12 @@
 module ho.components {
 
-    interface INode {
-        html: string,
-        parent: INode,
-        children: Array<INode>,
-        type?: string,
-        selfClosing?: boolean,
-        repeat?: boolean
+    class Node {
+        html: string;
+        parent: Node;
+        children: Array<Node> = [];
+        type: string;
+        selfClosing: boolean;
+        repeat: boolean;
     }
 
     export class Renderer {
@@ -33,7 +33,7 @@ module ho.components {
         }
 
 
-		private parse(html: string, root=<INode>{}) {
+		private parse(html: string, root= new Node()) {
 
 			var m;
 			while((m = this.r.tag.exec(html)) !== null) {
@@ -136,9 +136,10 @@ module ho.components {
 		private domToString(root, indent) {
 			indent = indent || 0;
 			var html = '';
+            const tab: any = '\t';
 
 			if(root.html) {
-				html += ("\t" as any).repeat(indent);
+				html += tab.repeat(indent);
 				if(root.type !== 'TEXT')
 					html += '<' + root.html + '>';
 				else html += root.html;
@@ -150,11 +151,11 @@ module ho.components {
 			if(root.children.length) {
 				html += root.children.map(function(c) {
 					return this.domToString(c, indent+(root.type ? 1 : 2));
-				}).join('\n');
+				}.bind(this)).join('\n');
 			}
 
 			if(root.type && root.type !== 'TEXT' && !root.selfClosing) {
-				html += ('\t' as any).repeat(indent);
+				html += tab.repeat(indent);
 				html += '</'+root.type+'>\n';
 			}
 

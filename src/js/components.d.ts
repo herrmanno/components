@@ -5,11 +5,12 @@ declare module ho.components {
         element: any;
         original_innerHTML: string;
         html: string;
-        properties: Array<string>;
+        properties: Array<string> | any;
         requires: Array<string>;
         static registry: Registry;
         static name: string;
         constructor(element: HTMLElement);
+        _init(): void;
         init(): Promise;
         update(): void;
         render(): void;

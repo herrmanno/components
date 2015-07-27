@@ -2,10 +2,10 @@
 
 class App extends ho.components.Component {
 
-    static name: string = "App";
+    static name = "App";
 
-    properties: string[] = ["name"]
+    properties = ["username"];
 
-    html: string = "<h3>${this.properties.username}</h3>";
+    html = "<h3>{properties.username}</h3>";
 
 }

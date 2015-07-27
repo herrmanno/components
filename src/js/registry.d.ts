@@ -3,6 +3,7 @@ declare module ho.components {
         private options;
         private components;
         constructor(options?: any);
+        setOptions(options?: any): void;
         register(c: typeof Component): void;
         run(): void;
         initComponent(component: typeof Component, element?: HTMLElement | Document): void;

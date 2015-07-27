@@ -6,20 +6,22 @@ module ho.components {
 
     export class Component {
         element: any;
-        original_innerHTML: string = undefined;
+        original_innerHTML: string;
         html: string;
-        properties: Array<string> = [];
+        properties: Array<string>|any = [];
         requires: Array<string> = [];
 
-        static registry: Registry;
+        static registry: Registry = new Registry();
         static name: string;
 
         constructor(element: HTMLElement) {
-            //------- init Elemenet and Elements' originla innerHTML
+            //------- init Elemenet and Elements' original innerHTML
             this.element = element;
             this.element.component = this;
             this.original_innerHTML = element.innerHTML;
+        }
 
+        public _init(): void {
             //-------- init Properties
             this.initProperties();
 
@@ -50,8 +52,10 @@ module ho.components {
 
 
         private initProperties(): void {
-            this.properties = this.properties.map((prop) => {
-                return this.element[prop] || this.element.getAttribute(prop);
+            let tmp = this.properties;
+            this.properties = {};
+            tmp.forEach((prop) => {
+                this.properties[prop] = this.element[prop] || this.element.getAttribute(prop);
             });
         }
 
@@ -72,7 +76,7 @@ module ho.components {
         }
 
         static run(opt?: any) {
-            Component.registry = new Registry(opt);
+            Component.registry.setOptions(opt);
             Component.registry.run();
         }
 
