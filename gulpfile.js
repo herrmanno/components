@@ -54,4 +54,4 @@ gulp.task('def', function() {
 });
 
 
-gulp.task('default', ['mini'], null);
+gulp.task('default', ['mini', 'def'], null);

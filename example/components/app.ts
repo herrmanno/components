@@ -6,6 +6,8 @@ class App extends ho.components.Component {
 
     properties = ["username"];
 
-    html = "<h3>{properties.username}</h3>";
+    requires = ["List"];
+
+    html = "<List/>";
 
 }

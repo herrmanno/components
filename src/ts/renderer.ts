@@ -117,7 +117,7 @@ module ho.components {
 
 						//root.children.splice(root.children.indexOf(child), 0, node);
 						holder.push(node);
-					});
+					}.bind(this));
 
 					holder.forEach(function(n) {
 						root.children.splice(root.children.indexOf(child), 0, n);
@@ -179,13 +179,15 @@ module ho.components {
 		}
 
 		private copyNode(node) {
-			var n = {
+			var copyNode = this.copyNode.bind(this);
+            
+            var n = {
 				parent: node.parent,
 				html: node.html,
 				type: node.type,
 				selfClosing: node.selfClosing,
 				repeat: node.repeat,
-				children: node.children.map(this.copyNode)
+				children: node.children.map(copyNode)
 			};
 
 			return n;
