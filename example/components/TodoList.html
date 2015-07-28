@@ -1,8 +1,9 @@
 <ul>
 	<li repeat='todos as t,i'>
-		<input type="checkbox" {t.done ? 'checked' : ''} onclick="{toggleDone}({i});"/>
+		<input type="checkbox" {{t.done ? 'checked' : ''}} onclick="{toggleDone}({i});"/>
 		<span>
 			{t.text}
 		</span>
+		<button onclick="{deleteTodo}({i})">X</button>
 	</li>
 </ul>

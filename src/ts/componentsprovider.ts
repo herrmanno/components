@@ -4,6 +4,18 @@ module ho.components {
 
         getComponent(name: string): Promise {
             return new Promise((resolve, reject) => {
+                let src = `components/${name}.js`;
+                let script = document.createElement('script');
+                script.onload = function() {
+                    Component.register(window[name]);
+                    resolve();
+                };
+                script.src = src;
+                document.getElementsByTagName('head')[0].appendChild(script);
+            });
+
+            /*
+            return new Promise((resolve, reject) => {
 
                 let url = `components/${name}.js`;
 
@@ -26,6 +38,7 @@ module ho.components {
     			xmlhttp.send();
 
             });
+        */
         }
 
     }

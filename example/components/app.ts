@@ -2,12 +2,8 @@
 
 class App extends ho.components.Component {
 
-    static name = "App";
+    requires = ["TodoBox"];
 
-    properties = ["username"];
-
-    requires = ["List"];
-
-    html = "<List/>";
+    html = "<TodoBox/>";
 
 }

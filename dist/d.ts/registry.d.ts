@@ -2,6 +2,7 @@ declare module ho.components {
     class Registry {
         private options;
         private components;
+        private htmlMap;
         constructor(options?: any);
         setOptions(options?: any): void;
         register(c: typeof Component): void;
@@ -10,6 +11,7 @@ declare module ho.components {
         initElement(element: HTMLElement): void;
         hasComponent(name: string): boolean;
         loadComponent(name: string): Promise;
+        getHtml(name: string): Promise;
         render(component: Component): void;
     }
 }

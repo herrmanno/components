@@ -19,11 +19,11 @@ var entry = 'components.js';
 
 
 gulp.task('clean', function() {
-    del.sync(dist);
+    return del.sync(dist+'/d.ts', {force: true}) && del.sync(dist, {force: true});
 });
 
 gulp.task('package', ['clean'], function() {
-    gulp.src('src/ts/components.ts')
+    return gulp.src('src/ts/components.ts')
     .pipe(sourcemap.init())
     .pipe(typescript({
         out: entry,
@@ -31,11 +31,6 @@ gulp.task('package', ['clean'], function() {
     }))
     .pipe(sourcemap.write())
     .pipe(gulp.dest(dist));
-
-    /*
-    return gulp.src('src/js/' +  entry)
-    .pipe(gulp.dest(dist));
-    */
 });
 
 
@@ -48,10 +43,10 @@ gulp.task('mini', ['package'], function() {
     .pipe(gulp.dest(dist));
 });
 
-gulp.task('def', function() {
+gulp.task('def', ['mini'], function() {
     return gulp.src('src/js/**/*.d.ts')
     .pipe(gulp.dest(dist + '/d.ts'));
 });
 
 
-gulp.task('default', ['mini', 'def'], null);
+gulp.task('default', ['def'], null);

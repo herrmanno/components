@@ -1,5 +1,10 @@
 module ho.components {
 
+    interface NodeHtml {
+        root: Node;
+        html: string;
+    }
+
     class Node {
         html: string;
         parent: Node;
@@ -11,6 +16,8 @@ module ho.components {
 
     export class Renderer {
 
+        private tmpCount: number = 0;
+
         private r: any = {
 			tag: /<([^>]*?(?:(?:('|")[^'"]*?\2)[^>]*?)*)>/,
 			repeat: /repeat=["|'].+["|']/,
@@ -18,14 +25,15 @@ module ho.components {
 			text: /(?:.|[\r\n])*?[^"'\\]</m,
 		};
 
-        //private cache: {[key:string]:INode};
+        private cache: {[key:string]:Node} = {};
 
         public render(component: Component): void {
-            if(typeof component.html === 'undefined')
+            if(typeof component.html === 'boolean' && !component.html)
                 return;
 
-            let root = this.parse(component.html);
-            root = this.renderRepeat(root, component);
+            let name = Component.getName(component);
+            let root = this.cache[name] = this.cache[name] || this.parse(component.html).root;
+            root = this.renderRepeat(this.copyNode(root), component);
 
             let html = this.domToString(root, -1);
 
@@ -33,7 +41,7 @@ module ho.components {
         }
 
 
-		private parse(html: string, root= new Node()) {
+		private parse(html: string, root= new Node()): NodeHtml {
 
 			var m;
 			while((m = this.r.tag.exec(html)) !== null) {
@@ -71,17 +79,17 @@ module ho.components {
 						var result = this.parse(html, root.children[root.children.length-1]);
 						html = result.html;
 						root.children.pop();
-						root.children.push(result);
+						root.children.push(result.root);
 					}
 				}
 
 				m = html.match(this.r.tag);
 			}
 
-			return root;
+			return {root: root, html: html};
 		}
 
-		private renderRepeat(root, models) {
+		private renderRepeat(root, models): Node {
 			models = [].concat(models);
 
 			for(var c = 0; c < root.children.length; c++) {
@@ -133,7 +141,7 @@ module ho.components {
 			return root;
 		}
 
-		private domToString(root, indent) {
+		private domToString(root, indent): string {
 			indent = indent || 0;
 			var html = '';
             const tab: any = '\t';
@@ -162,26 +170,77 @@ module ho.components {
 			return html;
 		}
 
-		private evaluate(models, path) {
-			var mi = 0;
+        private evaluate(models: any[], path: string): any {
+            if(path[0] === '{' && path[--path.length] === '}')
+                return this.evaluateExpression(models, path.substr(1, path.length-2))
+            else if(path[0] === '#')
+                return this.evaluateFunction(models, path.substr(1));
+            else
+                return this.evaluateValue(models, path);
+        }
+
+		private evaluateValue(models: any[], path: string): any {
+			if(models.indexOf(window) == -1)
+                models.push(window);
+
+            var mi = 0;
 			var model = void 0;
 			while(mi < models.length && model === undefined) {
 				model = models[mi];
 				try {
-					model = new Function("model", "return model."+path)(model);
+					model = new Function("model", "return model['" + path.split(".").join("']['") + "']")(model);
 				} catch(e) {
 					model = void 0;
-					mi++;
-				}
+				} finally {
+                    mi++;
+                }
 			}
 
 			return model;
 		}
 
-		private copyNode(node) {
+        private evaluateExpression(models: any[], path: string): any {
+			if(models.indexOf(window) == -1)
+                models.push(window);
+
+            var mi = 0;
+			var model = void 0;
+			while(mi < models.length && model === undefined) {
+				model = models[mi];
+				try {
+                    with(model)
+		               model = eval(path);
+				} catch(e) {
+					model = void 0;
+				} finally {
+                    mi++;
+                }
+			}
+
+			return model;
+		}
+
+        private evaluateFunction(models: any[], path: string): any {
+			var [name, args] = path.split('(');
+
+            name = this.evaluateValue(models, name);
+            args = args.substr(0, args.length-2);
+            args = args.split['.'] && args.split['.'].map(this.evaluateExpression.bind(this, models));
+
+            window.F = window.F || {};
+            window.F[this.tmpCount] = function() {
+                name.apply(this, args);
+            };
+
+            var str = `F[${this.tmpCount}]()`;
+            this.tmpCount++;
+            return str;
+		}
+
+		private copyNode(node: Node): Node {
 			var copyNode = this.copyNode.bind(this);
-            
-            var n = {
+
+            var n = <Node>{
 				parent: node.parent,
 				html: node.html,
 				type: node.type,
@@ -193,9 +252,12 @@ module ho.components {
 			return n;
 		}
 
-		private repl(str, models) {
-			var regex = /{([^{}|]+)}/;
-			var regexG = /{([^{}|]+)}/g;
+
+		private repl(str: string, models: any[]): string {
+			//var regex = /{([^{}|]+)}/;
+			//var regexG = /{([^{}|]+)}/g;
+
+			var regexG = /{(.+?)}}?/g;
 
 			var m = str.match(regexG);
 			if(!m)
@@ -203,20 +265,15 @@ module ho.components {
 
 			while(m.length) {
 				var path = m[0];
-				path = path.startsWith('{') ? path.substr(1) : path;
-				path = path.endsWith('}') ? path.substr(0, path.length-1) : path;
+				path = path.substr(1, path.length-2);
+                //path = path.indexOf('{') === 0 ? path.substr(1) : path;
+				//path = path.indexOf('}') === --path.length ? path.substr(0, path.length-1) : path;
+
 				var value = this.evaluate(models, path);
-				/*
-				var value = undefined;
-				try {
-					with(model)
-						value = eval(path);
-				} catch(e) {}
-				*/
 
 				if(value !== undefined) {
 					if(typeof value === 'function') {
-						value = "Component.getComponent(this)."+path;
+						value = "ho.components.Component.getComponent(this)."+path;
 					}
 					str = str.replace(m[0], value);
 				}

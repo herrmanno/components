@@ -22,7 +22,10 @@
         "!./node_modules/**/*"
     ],
     "files": [
-        "./app.ts",
-        "./list.ts"
+        "./TodoBox.ts",
+        "./TodoCount.ts",
+        "./TodoInput.ts",
+        "./TodoList.ts",
+        "./app.ts"
     ]
 }

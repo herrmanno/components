@@ -6,7 +6,12 @@ window.Store = {
 	update: function() {
 		localStorage['todos'] = JSON.stringify(this.todos);
 		this.listeners.forEach(function(l) {
-			l.call();
+			l.call(null, this.todos);
 		});
+	},
+
+	addTodo: function(todo) {
+		this.todos.push(todo);
+		this.update();
 	},
 };

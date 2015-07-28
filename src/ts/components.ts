@@ -4,15 +4,27 @@ import Promise = ho.promise.Promise;
 
 module ho.components {
 
+    export interface ComponentElement extends HTMLElement {
+        component?: Component;
+    }
+
+    export interface IProprety {
+        name: string;
+        required?: boolean;
+        default?: any;
+    }
+
     export class Component {
-        element: any;
+        element: ComponentElement;
         original_innerHTML: string;
         html: string;
-        properties: Array<string>|any = [];
+        properties: Array<string|IProprety> = [];
+        property: {[key: string]: string} = {};
         requires: Array<string> = [];
+        children: {[key: string]: any} = {};
 
         static registry: Registry = new Registry();
-        static name: string;
+        //static name: string;
 
         constructor(element: HTMLElement) {
             //------- init Elemenet and Elements' original innerHTML
@@ -21,22 +33,27 @@ module ho.components {
             this.original_innerHTML = element.innerHTML;
         }
 
+        public getParent(): Component {
+            return Component.getComponent(<ComponentElement>this.element.parentNode);
+        }
+
         public _init(): void {
+            let render = this.render.bind(this);
             //-------- init Properties
             this.initProperties();
 
             //------- call init() & loadRequirements() -> then render
-            let ready = [this.init(), this.loadRequirements()];
+            let ready = [this.initHTML(), Promise.create(this.init()), this.loadRequirements()];
             Promise.all(ready)
             .then(() => {
-                this.render();
+                render();
             })
             .catch((err) => {
                 throw err;
             });
         }
 
-        public init(): Promise {return new Promise((resolve)=>{resolve();});}
+        public init(): any {}
 
         public update(): void {return void 0;}
 
@@ -45,18 +62,57 @@ module ho.components {
 
 			this.update();
 
-    		//this.initChildren();
+    		this.initChildren();
 
     		Component.registry.initElement(this.element);
     	};
 
+        /**
+        *  Assure that this instance has an valid html attribute and if not load it.
+        */
+        private initHTML(): Promise {
+            let p = new Promise();
+            let self = this;
+
+            if(typeof this.html === 'boolean')
+                p.resolve();
+            if(typeof this.html === 'string')
+                p.resolve();
+            if(typeof this.html === 'undefined') {
+                let name = Component.getName(this);
+                Component.registry.getHtml(name)
+                .then((html) => {
+                    self.html = html;
+                    p.resolve();
+                })
+                .catch(p.reject);
+            }
+
+            return p;
+        }
 
         private initProperties(): void {
-            let tmp = this.properties;
-            this.properties = {};
-            tmp.forEach((prop) => {
-                this.properties[prop] = this.element[prop] || this.element.getAttribute(prop);
-            });
+            this.properties.forEach(function(prop) {
+                if(typeof prop === 'object') {
+                    this.properties[prop.name] = this.element[prop.name] || this.element.getAttribute(prop.name) || prop.default;
+                    if(this.properties[prop.name] === undefined && prop.required === true)
+                        throw `Property ${prop.name} is required but not provided`;
+                }
+                else if(typeof prop === 'string')
+                    this.properties[prop] = this.element[prop] || this.element.getAttribute(prop);
+            }.bind(this));
+        }
+
+        private initChildren(): void {
+            let childs = this.element.querySelectorAll('*');
+    		for(let c = 0; c < childs.length; c++) {
+    			let child = childs[c];
+    			if(child.id) {
+    				this.children[child.id] = child;
+    			}
+    			this.children[child.tagName] = this.children[child.tagName] || [];
+                (<Element[]>this.children[child.tagName]).push(child);
+    		}
         }
 
         private loadRequirements() {
@@ -78,6 +134,19 @@ module ho.components {
         static run(opt?: any) {
             Component.registry.setOptions(opt);
             Component.registry.run();
+        }
+
+        static getComponent(element: ComponentElement): Component {
+            while(!element.component)
+    			element = <ComponentElement>element.parentNode;
+    		return element.component;
+        }
+
+        static getName(clazz: typeof Component | Component): string {
+            if(clazz instanceof Component)
+                return clazz.constructor.toString().match(/\w+/g)[1];
+            else
+                return clazz.toString().match(/\w+/g)[1];
         }
 
 
