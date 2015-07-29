@@ -1,15 +1,24 @@
+/// <reference path="./main"/>
 /// <reference path="./registry"/>
+/// <reference path="./htmlprovider.ts"/>
+/// <reference path="./renderer.ts"/>
+/// <reference path="./attribute.ts"/>
 /// <reference path="../../bower_components/ho-promise/dist/d.ts/promise.d.ts"/>
-var Promise = ho.promise.Promise;
 var ho;
 (function (ho) {
     var components;
-    (function (components) {
+    (function (components_1) {
+        var Registry = ho.components.registry.instance;
+        var HtmlProvider = ho.components.htmlprovider.instance;
+        var Renderer = ho.components.renderer.instance;
+        var Promise = ho.promise.Promise;
         var Component = (function () {
+            //static registry: Registry = new Registry();
             //static name: string;
             function Component(element) {
                 this.properties = [];
-                this.property = {};
+                this.attributes = [];
+                //property: {[key: string]: string} = {};
                 this.requires = [];
                 this.children = {};
                 //------- init Elemenet and Elements' original innerHTML
@@ -44,10 +53,11 @@ var ho;
             Component.prototype.init = function () { };
             Component.prototype.update = function () { return void 0; };
             Component.prototype.render = function () {
-                Component.registry.render(this);
-                this.update();
+                Renderer.render(this);
+                Registry.initElement(this.element);
                 this.initChildren();
-                Component.registry.initElement(this.element);
+                this.initAttributes();
+                this.update();
             };
             ;
             /**
@@ -62,7 +72,7 @@ var ho;
                     p.resolve();
                 if (typeof this.html === 'undefined') {
                     //let name = Component.getName(this);
-                    Component.registry.getHtml(this.name)
+                    HtmlProvider.getHTML(this.name)
                         .then(function (html) {
                         self.html = html;
                         p.resolve();
@@ -89,28 +99,54 @@ var ho;
                     if (child.id) {
                         this.children[child.id] = child;
                     }
-                    this.children[child.tagName] = this.children[child.tagName] || [];
+                    if (child.tagName)
+                        this.children[child.tagName] = this.children[child.tagName] || [];
                     this.children[child.tagName].push(child);
                 }
             };
+            Component.prototype.initAttributes = function () {
+                var _this = this;
+                this.attributes
+                    .forEach(function (a) {
+                    var attr = Registry.getAttribute(a);
+                    Array.prototype.forEach.call(_this.element.querySelectorAll("*[" + a + "]"), function (e) {
+                        var val = e.hasOwnProperty(a) ? e[a] : e.getAttribute(a);
+                        if (typeof val === 'string' && val === '')
+                            val = void 0;
+                        new attr(e, val).update();
+                    });
+                });
+            };
             Component.prototype.loadRequirements = function () {
-                var promises = this.requires
+                var components = this.requires
                     .filter(function (req) {
-                    return !Component.registry.hasComponent(req);
+                    return !Registry.hasComponent(req);
                 })
                     .map(function (req) {
-                    return Component.registry.loadComponent(req);
+                    return Registry.loadComponent(req);
                 });
+                var attributes = this.attributes
+                    .filter(function (req) {
+                    return !Registry.hasAttribute(req);
+                })
+                    .map(function (req) {
+                    return Registry.loadAttribute(req);
+                });
+                var promises = components.concat(attributes);
                 return Promise.all(promises);
             };
             ;
-            Component.register = function (c) {
-                Component.registry.register(c);
-            };
-            Component.run = function (opt) {
-                Component.registry.setOptions(opt);
-                Component.registry.run();
-            };
+            /*
+            static register(c: typeof Component): void {
+                Registry.register(c);
+            }
+            */
+            /*
+            static run(opt?: any) {
+                Registry.setOptions(opt);
+                Registry.run();
+            }
+            */
             Component.getComponent = function (element) {
                 while (!element.component)
                     element = element.parentNode;
@@ -122,9 +158,8 @@ var ho;
                 else
                     return clazz.toString().match(/\w+/g)[1];
             };
-            Component.registry = new components.Registry();
             return Component;
         })();
-        components.Component = Component;
+        components_1.Component = Component;
     })(components = ho.components || (ho.components = {}));
 })(ho || (ho = {}));

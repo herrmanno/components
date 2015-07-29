@@ -1,4 +1,5 @@
-declare module ho.components {
+/// <reference path="registry.d.ts" />
+declare module ho.components.renderer {
     class Renderer {
         private r;
         private cache;
@@ -14,4 +15,5 @@ declare module ho.components {
         private evaluateFunction(models, path);
         private copyNode(node);
     }
+    let instance: Renderer;
 }

@@ -2,7 +2,9 @@
 
 class TodoCount extends ho.components.Component {
 
-	html = "<h4>{done} / {undone}</h4>";
+	attributes = ["Bordered"];
+
+	html = "<h4 bordered>{done} / {undone}</h4>";
 
 	done: number;
 	undone: number;

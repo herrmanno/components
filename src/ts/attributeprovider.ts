@@ -1,18 +1,20 @@
-module ho.components.componentprovider {
+/// <reference path="./attribute.ts"/>
+
+module ho.components.attributeprovider {
     import Promise = ho.promise.Promise;
 
-    export class ComponentProvider {
+    export class AttributeProvider {
 
         useMin: boolean = false;
 
         resolve(name: string): string {
             return this.useMin ?
-                `components/${name}.min.js` :
-                `components/${name}.js`;
+                `attributes/${name}.min.js` :
+                `attributes/${name}.js`;
         }
 
-        getComponent(name: string): Promise<typeof Component, string> {
-            return new Promise<typeof Component, any>((resolve, reject) => {
+        getAttribute(name: string): Promise<typeof Attribute, string> {
+            return new Promise<typeof Attribute, any>((resolve, reject) => {
                 let src = this.resolve(name);
                 let script = document.createElement('script');
                 script.onload = function() {
@@ -20,7 +22,7 @@ module ho.components.componentprovider {
                     if(typeof window[name] === 'function')
                         resolve(window[name]);
                     else
-                        reject(`Error while loading Component ${name}`)
+                        reject(`Error while loading Attribute ${name}`)
                 };
                 script.src = src;
                 document.getElementsByTagName('head')[0].appendChild(script);
@@ -30,6 +32,6 @@ module ho.components.componentprovider {
 
     }
 
-    export let instance = new ComponentProvider();
+    export let instance = new AttributeProvider();
 
 }

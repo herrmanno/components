@@ -1,14 +1,17 @@
-/// <reference path="options"/>
+/// <reference path="./componentsprovider.ts"/>
+/// <reference path="./attributeprovider.ts"/>
 
-module ho.components {
+module ho.components.registry {
+    import Promise = ho.promise.Promise;
 
     export class Registry {
 
-        private options: RegistryOptions;
         private components: Array<typeof Component> = [];
-        private htmlMap: {[key: string]: string} = {};
+        private attributes: Array<typeof Attribute> = [];
+        //private options: RegistryOptions;
+        //private htmlMap: {[key: string]: string} = {};
 
-
+        /*
         constructor(options?: any) {
             this.options = new RegistryOptions(options);
         }
@@ -16,10 +19,15 @@ module ho.components {
         public setOptions(options?: any) {
             this.options = new RegistryOptions(options);
         }
+        */
 
         public register(c: typeof Component): void {
             this.components.push(c);
             document.createElement(Component.getName(c));
+        }
+
+        public registerAttribute(a: typeof Attribute): void {
+            this.attributes.push(a);
         }
 
         public run(): void {
@@ -41,17 +49,51 @@ module ho.components {
         }
 
         public hasComponent(name: string): boolean {
-
             return this.components
                 .filter((component) => {
                     return Component.getName(component) === name;
                 }).length > 0;
         }
 
-        public loadComponent(name: string): Promise {
-            return this.options.componentProvider.getComponent(name)
+        public hasAttribute(name: string): boolean {
+            return this.attributes
+                .filter((attribute) => {
+                    return Attribute.getName(attribute) === name;
+                }).length > 0;
         }
 
+        public getAttribute(name: string): typeof Attribute {
+            return this.attributes
+            .filter((attribute) => {
+                return Attribute.getName(attribute) === name;
+            })[0];
+        }
+
+        public loadComponent(name: string): Promise<typeof Component, string> {
+            let self = this;
+            return new Promise<typeof Component, string>((resolve, reject) => {
+                ho.components.componentprovider.instance.getComponent(name)
+                .then((component) => {
+                    self.register(component);
+                    resolve(component);
+                });
+            });
+            //return this.options.componentProvider.getComponent(name)
+        }
+
+        public loadAttribute(name: string): Promise<typeof Attribute, string> {
+            let self = this;
+            return new Promise<typeof Attribute, string>((resolve, reject) => {
+                ho.components.attributeprovider.instance.getAttribute(name)
+                .then((attribute) => {
+                    self.registerAttribute(attribute);
+                    resolve(attribute);
+                });
+            });
+            //return this.options.componentProvider.getComponent(name)
+        }
+
+        /*
         public getHtml(name: string): Promise {
             let p = new Promise();
 
@@ -72,7 +114,9 @@ module ho.components {
             this.options.renderer.render(component);
         }
 
+        */
+
     }
 
-    export var registry = new Registry();
+    export let instance = new Registry();
 }

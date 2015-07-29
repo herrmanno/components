@@ -4,9 +4,15 @@ declare var Store: any;
 
 class TodoInput extends ho.components.Component {
 
+	attributes = ['Disable', 'Centered'];
+
 	html =
+		`<input id='todoinput' placeholder='next todo?' centered="30"/>
+		<button id='addbtn' onclick='{#addTodo()};' disable='!#children.todoinput.value#'>Add</button>`;
+		/*
 		`<input id='todoinput' onkeyup='{toggleButton}(this.value);' placeholder='next todo?'/>
 		<button id='addbtn' onclick='{#addTodo()};' disabled>Add</button>`;
+		*/
 
 	init() {
 		Store.listeners.push(this.render.bind(this));

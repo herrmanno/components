@@ -1,8 +1,16 @@
+/// <reference path="./main"/>
 /// <reference path="./registry"/>
+/// <reference path="./htmlprovider.ts"/>
+/// <reference path="./renderer.ts"/>
+/// <reference path="./attribute.ts"/>
 /// <reference path="../../bower_components/ho-promise/dist/d.ts/promise.d.ts"/>
-import Promise = ho.promise.Promise;
 
 module ho.components {
+
+    import Registry = ho.components.registry.instance;
+    import HtmlProvider = ho.components.htmlprovider.instance;
+    import Renderer = ho.components.renderer.instance;
+    import Promise = ho.promise.Promise;
 
     export interface ComponentElement extends HTMLElement {
         component?: Component;
@@ -19,11 +27,12 @@ module ho.components {
         original_innerHTML: string;
         html: string;
         properties: Array<string|IProprety> = [];
-        property: {[key: string]: string} = {};
+        attributes: Array<string> = [];
+        //property: {[key: string]: string} = {};
         requires: Array<string> = [];
         children: {[key: string]: any} = {};
 
-        static registry: Registry = new Registry();
+        //static registry: Registry = new Registry();
         //static name: string;
 
         constructor(element: HTMLElement) {
@@ -62,19 +71,21 @@ module ho.components {
         public update(): void {return void 0;}
 
         public render(): void {
-    		Component.registry.render(this);
+    		Renderer.render(this);
 
-			this.update();
+    		Registry.initElement(this.element);
 
     		this.initChildren();
 
-    		Component.registry.initElement(this.element);
+            this.initAttributes();
+
+			this.update();
     	};
 
         /**
         *  Assure that this instance has an valid html attribute and if not load it.
         */
-        private initHTML(): Promise {
+        private initHTML(): Promise<any,any> {
             let p = new Promise();
             let self = this;
 
@@ -84,7 +95,7 @@ module ho.components {
                 p.resolve();
             if(typeof this.html === 'undefined') {
                 //let name = Component.getName(this);
-                Component.registry.getHtml(this.name)
+                HtmlProvider.getHTML(this.name)
                 .then((html) => {
                     self.html = html;
                     p.resolve();
@@ -114,31 +125,61 @@ module ho.components {
     			if(child.id) {
     				this.children[child.id] = child;
     			}
-    			this.children[child.tagName] = this.children[child.tagName] || [];
+    			if(child.tagName)
+                    this.children[child.tagName] = this.children[child.tagName] || [];
                 (<Element[]>this.children[child.tagName]).push(child);
     		}
         }
 
+        private initAttributes(): void {
+            this.attributes
+            .forEach((a) => {
+                let attr = Registry.getAttribute(a);
+                Array.prototype.forEach.call(this.element.querySelectorAll(`*[${a}]`), (e: HTMLElement) => {
+                    let val = e.hasOwnProperty(a) ? e[a] : e.getAttribute(a);
+                    if(typeof val === 'string' && val === '')
+                        val = void 0;
+                    new attr(e, val).update();
+                });
+            });
+        }
+
         private loadRequirements() {
-    		let promises = this.requires
+    		let components: any[] = this.requires
             .filter((req) => {
-                return !Component.registry.hasComponent(req);
+                return !Registry.hasComponent(req);
             })
             .map((req) => {
-                return Component.registry.loadComponent(req);
+                return Registry.loadComponent(req);
             });
+
+
+            let attributes: any[] = this.attributes
+            .filter((req) => {
+                return !Registry.hasAttribute(req);
+            })
+            .map((req) => {
+                return Registry.loadAttribute(req);
+            });
+
+
+            let promises = components.concat(attributes);
 
             return Promise.all(promises);
     	};
 
+        /*
         static register(c: typeof Component): void {
-            Component.registry.register(c);
+            Registry.register(c);
         }
+        */
 
+        /*
         static run(opt?: any) {
-            Component.registry.setOptions(opt);
-            Component.registry.run();
+            Registry.setOptions(opt);
+            Registry.run();
         }
+        */
 
         static getComponent(element: ComponentElement): Component {
             while(!element.component)

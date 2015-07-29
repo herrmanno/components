@@ -19,7 +19,8 @@
     "test",
     "tests"
   ],
-  "devDependencies": {
-    "ho-promise": "*"
+  "dependencies": {
+    "ho-promise": "latest",
+    "ho-watch": "latest"
   }
 }

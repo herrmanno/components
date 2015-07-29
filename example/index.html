@@ -2,20 +2,21 @@
 	<head>
 		<link rel="stylesheet" href="main.css" >
 
-		<script type="text/javascript" src="store.js"></script>
 		<script src="../bower_components/ho-promise/dist/promise.js" charset="utf-8"></script>
+		<script src="../bower_components/ho-watch/dist/watch.js" charset="utf-8"></script>
+		<script type="text/javascript" src="store.js"></script>
 		<script type="text/javascript" src="../dist/components.js"></script>
 		<script type="text/javascript" src="components/app.js"></script>
+		<!--
+		-->
 	</head>
 	<body>
 
-		<!--
-		-->
 		<App></App>
 
 		<script type="text/javascript">
-			ho.components.Component.register(App);
-			ho.components.Component.run();
+			ho.components.register(App);
+			ho.components.run();
 		</script>
 	</body>
 </html>

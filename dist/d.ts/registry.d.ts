@@ -1,17 +1,20 @@
-declare module ho.components {
+/// <reference path="componentsprovider.d.ts" />
+/// <reference path="attributeprovider.d.ts" />
+declare module ho.components.registry {
+    import Promise = ho.promise.Promise;
     class Registry {
-        private options;
         private components;
-        private htmlMap;
-        constructor(options?: any);
-        setOptions(options?: any): void;
+        private attributes;
         register(c: typeof Component): void;
+        registerAttribute(a: typeof Attribute): void;
         run(): void;
         initComponent(component: typeof Component, element?: HTMLElement | Document): void;
         initElement(element: HTMLElement): void;
         hasComponent(name: string): boolean;
-        loadComponent(name: string): Promise;
-        getHtml(name: string): Promise;
-        render(component: Component): void;
+        hasAttribute(name: string): boolean;
+        getAttribute(name: string): typeof Attribute;
+        loadComponent(name: string): Promise<typeof Component, string>;
+        loadAttribute(name: string): Promise<typeof Attribute, string>;
     }
+    let instance: Registry;
 }

@@ -1,20 +1,21 @@
+/// <reference path="./attribute.ts"/>
 var ho;
 (function (ho) {
     var components;
     (function (components) {
-        var componentprovider;
-        (function (componentprovider) {
+        var attributeprovider;
+        (function (attributeprovider) {
             var Promise = ho.promise.Promise;
-            var ComponentProvider = (function () {
-                function ComponentProvider() {
+            var AttributeProvider = (function () {
+                function AttributeProvider() {
                     this.useMin = false;
                 }
-                ComponentProvider.prototype.resolve = function (name) {
+                AttributeProvider.prototype.resolve = function (name) {
                     return this.useMin ?
-                        "components/" + name + ".min.js" :
-                        "components/" + name + ".js";
+                        "attributes/" + name + ".min.js" :
+                        "attributes/" + name + ".js";
                 };
-                ComponentProvider.prototype.getComponent = function (name) {
+                AttributeProvider.prototype.getAttribute = function (name) {
                     var _this = this;
                     return new Promise(function (resolve, reject) {
                         var src = _this.resolve(name);
@@ -24,16 +25,16 @@ var ho;
                             if (typeof window[name] === 'function')
                                 resolve(window[name]);
                             else
-                                reject("Error while loading Component " + name);
+                                reject("Error while loading Attribute " + name);
                         };
                         script.src = src;
                         document.getElementsByTagName('head')[0].appendChild(script);
                     });
                 };
-                return ComponentProvider;
+                return AttributeProvider;
             })();
-            componentprovider.ComponentProvider = ComponentProvider;
-            componentprovider.instance = new ComponentProvider();
-        })(componentprovider = components.componentprovider || (components.componentprovider = {}));
+            attributeprovider.AttributeProvider = AttributeProvider;
+            attributeprovider.instance = new AttributeProvider();
+        })(attributeprovider = components.attributeprovider || (components.attributeprovider = {}));
     })(components = ho.components || (ho.components = {}));
 })(ho || (ho = {}));

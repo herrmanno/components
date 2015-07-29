@@ -3,14 +3,15 @@
     "compilerOptions": {
         "target": "es5",
         "module": "commonjs",
-        "outDir": "../js",
-        "declaration": true,
-        "noEmitOnError": false,
+        "sourceMap": true,
+        "inlineSourceMap": true,
+        "inlineSources": true,
         "isolatedModules": false,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
+        "declaration": false,
         "noImplicitAny": false,
-        "removeComments": false,
+        "removeComments": true,
         "noLib": false,
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true
@@ -21,14 +22,8 @@
         "!./node_modules/**/*"
     ],
     "files": [
-        "./attribute.ts",
-        "./attributeprovider.ts",
-        "./components.ts",
-        "./componentsprovider.ts",
-        "./htmlprovider.ts",
-        "./main.ts",
-        "./registry.ts",
-        "./renderer.ts",
-        "./temp.ts"
+        "./bordered.ts",
+        "./centered.ts",
+        "./disable.ts"
     ]
 }

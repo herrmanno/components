@@ -1,11 +1,21 @@
-module ho.components {
+module ho.components.htmlprovider {
+    import Promise = ho.promise.Promise;
 
     export class HtmlProvider {
 
-        getHTML(name: string): Promise {
+        private cache: {[kay:string]:string} = {};
+
+        resolve(name: string): string {
+            return `components/${name}.html`;
+        }
+
+        getHTML(name: string): Promise<string, string> {
             return new Promise((resolve, reject) => {
 
-                let url = `components/${name}.html`;
+                if(typeof this.cache[name] === 'string')
+                    return resolve(this.cache[name]);
+
+                let url = this.resolve(name);
 
                 let xmlhttp = new XMLHttpRequest();
     			xmlhttp.onreadystatechange = function() {
@@ -14,7 +24,7 @@ module ho.components {
     					if(xmlhttp.status == 200) {
                             resolve(resp);
     					} else {
-    						reject(resp);
+    						reject(`Error while loading html for Component ${name}`);
     					}
     				}
     			};
@@ -24,7 +34,8 @@ module ho.components {
 
             });
         }
-
     }
+
+    export let instance = new HtmlProvider();
 
 }

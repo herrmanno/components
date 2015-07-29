@@ -1,5 +1,7 @@
+/// <reference path="htmlprovider.d.ts" />
+/// <reference path="renderer.d.ts" />
+/// <reference path="attribute.d.ts" />
 /// <reference path="../../bower_components/ho-promise/dist/d.ts/promise.d.ts" />
-import Promise = ho.promise.Promise;
 declare module ho.components {
     interface ComponentElement extends HTMLElement {
         component?: Component;
@@ -14,15 +16,13 @@ declare module ho.components {
         original_innerHTML: string;
         html: string;
         properties: Array<string | IProprety>;
-        property: {
-            [key: string]: string;
-        };
+        attributes: Array<string>;
         requires: Array<string>;
         children: {
             [key: string]: any;
         };
-        static registry: Registry;
         constructor(element: HTMLElement);
+        name: string;
         getParent(): Component;
         _init(): void;
         init(): any;
@@ -34,9 +34,8 @@ declare module ho.components {
         private initHTML();
         private initProperties();
         private initChildren();
+        private initAttributes();
         private loadRequirements();
-        static register(c: typeof Component): void;
-        static run(opt?: any): void;
         static getComponent(element: ComponentElement): Component;
         static getName(clazz: typeof Component | Component): string;
     }

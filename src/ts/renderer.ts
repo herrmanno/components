@@ -1,6 +1,8 @@
+/// <reference path="./registry.ts"/>
 /// <reference path="./temp"/>
 
-module ho.components {
+module ho.components.renderer {
+    import Registry = ho.components.registry.instance;
 
     interface NodeHtml {
         root: Node;
@@ -38,6 +40,7 @@ module ho.components {
             let html = this.domToString(root, -1);
 
             component.element.innerHTML = html;
+
         }
 
 
@@ -60,7 +63,7 @@ module ho.components {
 					selfClosing = tag[tag.length-1] === '/';
 					repeat = !!tag.match(this.r.repeat);
 
-					if(selfClosing && Component.registry.hasComponent(type)) {
+					if(selfClosing && Registry.hasComponent(type)) {
 						selfClosing = false;
 						tag = tag.substr(0, tag.length-1) + " ";
 
@@ -147,7 +150,7 @@ module ho.components {
             const tab: any = '\t';
 
 			if(root.html) {
-				html += tab.repeat(indent);
+				html += new Array(indent).join(tab); //tab.repeat(indent);;
 				if(root.type !== 'TEXT')
 					html += '<' + root.html + '>';
 				else html += root.html;
@@ -163,7 +166,7 @@ module ho.components {
 			}
 
 			if(root.type && root.type !== 'TEXT' && !root.selfClosing) {
-				html += tab.repeat(indent);
+				html += new Array(indent).join(tab); //tab.repeat(indent);
 				html += '</'+root.type+'>\n';
 			}
 
@@ -288,5 +291,7 @@ module ho.components {
 		}
 
     }
+
+    export let instance = new Renderer();
 
 }
