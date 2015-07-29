@@ -14,4 +14,5 @@ declare module ho.components {
         getHtml(name: string): Promise;
         render(component: Component): void;
     }
+    var registry: Registry;
 }

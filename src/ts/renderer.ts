@@ -1,3 +1,5 @@
+/// <reference path="./temp"/>
+
 module ho.components {
 
     interface NodeHtml {
@@ -16,8 +18,6 @@ module ho.components {
 
     export class Renderer {
 
-        private tmpCount: number = 0;
-
         private r: any = {
 			tag: /<([^>]*?(?:(?:('|")[^'"]*?\2)[^>]*?)*)>/,
 			repeat: /repeat=["|'].+["|']/,
@@ -31,7 +31,7 @@ module ho.components {
             if(typeof component.html === 'boolean' && !component.html)
                 return;
 
-            let name = Component.getName(component);
+            let name = component.name;
             let root = this.cache[name] = this.cache[name] || this.parse(component.html).root;
             root = this.renderRepeat(this.copyNode(root), component);
 
@@ -170,6 +170,32 @@ module ho.components {
 			return html;
 		}
 
+        private repl(str: string, models: any[]): string {
+            var regexG = /{(.+?)}}?/g;
+
+            var m = str.match(regexG);
+            if(!m)
+                return str;
+
+            while(m.length) {
+                var path = m[0];
+                path = path.substr(1, path.length-2);
+
+                var value = this.evaluate(models, path);
+
+                if(value !== undefined) {
+                    if(typeof value === 'function') {
+                        value = "ho.components.Component.getComponent(this)."+path;
+                    }
+                    str = str.replace(m[0], value);
+                }
+
+                m = m.slice(1);
+            }
+
+            return str;
+        }
+
         private evaluate(models: any[], path: string): any {
             if(path[0] === '{' && path[--path.length] === '}')
                 return this.evaluateExpression(models, path.substr(1, path.length-2))
@@ -179,7 +205,11 @@ module ho.components {
                 return this.evaluateValue(models, path);
         }
 
-		private evaluateValue(models: any[], path: string): any {
+        private evaluateValue(models: any[], path: string): any {
+            return this.evaluateValueAndModel(models, path).value;
+        }
+
+		private evaluateValueAndModel(models: any[], path: string): {value: any, model: any} {
 			if(models.indexOf(window) == -1)
                 models.push(window);
 
@@ -196,7 +226,7 @@ module ho.components {
                 }
 			}
 
-			return model;
+			return {"value": model, "model": models[--mi]};
 		}
 
         private evaluateExpression(models: any[], path: string): any {
@@ -208,8 +238,9 @@ module ho.components {
 			while(mi < models.length && model === undefined) {
 				model = models[mi];
 				try {
-                    with(model)
-		               model = eval(path);
+                    //with(model) model = eval(path);
+                    model = new Function(Object.keys(model).toString(), "return " + path)
+                        .apply(null, Object.keys(model).map((k) => {return model[k]}) );
 				} catch(e) {
 					model = void 0;
 				} finally {
@@ -221,19 +252,23 @@ module ho.components {
 		}
 
         private evaluateFunction(models: any[], path: string): any {
+            let exp = this.evaluateExpression.bind(this, models);
 			var [name, args] = path.split('(');
+            args = args.substr(0, --args.length);
 
-            name = this.evaluateValue(models, name);
-            args = args.substr(0, args.length-2);
-            args = args.split['.'] && args.split['.'].map(this.evaluateExpression.bind(this, models));
+            let {value, model} = this.evaluateValueAndModel(models, name);
+            let func: Function = value;
+            let argArr: string[] = args.split('.').map((arg) => {
+                return arg.indexOf('#') === 0 ?
+                    arg.substr(1) :
+                    exp(arg);
+            });
 
-            window.F = window.F || {};
-            window.F[this.tmpCount] = function() {
-                name.apply(this, args);
-            };
+            func = func.bind(model, ...argArr);
 
-            var str = `F[${this.tmpCount}]()`;
-            this.tmpCount++;
+            let index = ho.components.temp.set(func);
+
+            var str = `ho.components.temp.call(${index})`;
             return str;
 		}
 
@@ -252,37 +287,6 @@ module ho.components {
 			return n;
 		}
 
-
-		private repl(str: string, models: any[]): string {
-			//var regex = /{([^{}|]+)}/;
-			//var regexG = /{([^{}|]+)}/g;
-
-			var regexG = /{(.+?)}}?/g;
-
-			var m = str.match(regexG);
-			if(!m)
-				return str;
-
-			while(m.length) {
-				var path = m[0];
-				path = path.substr(1, path.length-2);
-                //path = path.indexOf('{') === 0 ? path.substr(1) : path;
-				//path = path.indexOf('}') === --path.length ? path.substr(0, path.length-1) : path;
-
-				var value = this.evaluate(models, path);
-
-				if(value !== undefined) {
-					if(typeof value === 'function') {
-						value = "ho.components.Component.getComponent(this)."+path;
-					}
-					str = str.replace(m[0], value);
-				}
-
-				m = m.slice(1);
-			}
-
-			return str;
-		}
     }
 
 }

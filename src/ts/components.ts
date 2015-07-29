@@ -33,6 +33,10 @@ module ho.components {
             this.original_innerHTML = element.innerHTML;
         }
 
+        public get name(): string {
+            return Component.getName(this);
+        }
+
         public getParent(): Component {
             return Component.getComponent(<ComponentElement>this.element.parentNode);
         }
@@ -79,8 +83,8 @@ module ho.components {
             if(typeof this.html === 'string')
                 p.resolve();
             if(typeof this.html === 'undefined') {
-                let name = Component.getName(this);
-                Component.registry.getHtml(name)
+                //let name = Component.getName(this);
+                Component.registry.getHtml(this.name)
                 .then((html) => {
                     self.html = html;
                     p.resolve();

@@ -1,3 +1,4 @@
+/// <reference path="./temp"/>
 var ho;
 (function (ho) {
     var components;
@@ -10,7 +11,6 @@ var ho;
         })();
         var Renderer = (function () {
             function Renderer() {
-                this.tmpCount = 0;
                 this.r = {
                     tag: /<([^>]*?(?:(?:('|")[^'"]*?\2)[^>]*?)*)>/,
                     repeat: /repeat=["|'].+["|']/,
@@ -22,7 +22,7 @@ var ho;
             Renderer.prototype.render = function (component) {
                 if (typeof component.html === 'boolean' && !component.html)
                     return;
-                var name = components.Component.getName(component);
+                var name = component.name;
                 var root = this.cache[name] = this.cache[name] || this.parse(component.html).root;
                 root = this.renderRepeat(this.copyNode(root), component);
                 var html = this.domToString(root, -1);
@@ -137,6 +137,25 @@ var ho;
                 }
                 return html;
             };
+            Renderer.prototype.repl = function (str, models) {
+                var regexG = /{(.+?)}}?/g;
+                var m = str.match(regexG);
+                if (!m)
+                    return str;
+                while (m.length) {
+                    var path = m[0];
+                    path = path.substr(1, path.length - 2);
+                    var value = this.evaluate(models, path);
+                    if (value !== undefined) {
+                        if (typeof value === 'function') {
+                            value = "ho.components.Component.getComponent(this)." + path;
+                        }
+                        str = str.replace(m[0], value);
+                    }
+                    m = m.slice(1);
+                }
+                return str;
+            };
             Renderer.prototype.evaluate = function (models, path) {
                 if (path[0] === '{' && path[--path.length] === '}')
                     return this.evaluateExpression(models, path.substr(1, path.length - 2));
@@ -146,6 +165,9 @@ var ho;
                     return this.evaluateValue(models, path);
             };
             Renderer.prototype.evaluateValue = function (models, path) {
+                return this.evaluateValueAndModel(models, path).value;
+            };
+            Renderer.prototype.evaluateValueAndModel = function (models, path) {
                 if (models.indexOf(window) == -1)
                     models.push(window);
                 var mi = 0;
@@ -162,7 +184,7 @@ var ho;
                         mi++;
                     }
                 }
-                return model;
+                return { "value": model, "model": models[--mi] };
             };
             Renderer.prototype.evaluateExpression = function (models, path) {
                 if (models.indexOf(window) == -1)
@@ -172,8 +194,9 @@ var ho;
                 while (mi < models.length && model === undefined) {
                     model = models[mi];
                     try {
-                        with (model)
-                            model = eval(path);
+                        //with(model) model = eval(path);
+                        model = new Function(Object.keys(model).toString(), "return " + path)
+                            .apply(null, Object.keys(model).map(function (k) { return model[k]; }));
                     }
                     catch (e) {
                         model = void 0;
@@ -185,16 +208,19 @@ var ho;
                 return model;
             };
             Renderer.prototype.evaluateFunction = function (models, path) {
+                var exp = this.evaluateExpression.bind(this, models);
                 var _a = path.split('('), name = _a[0], args = _a[1];
-                name = this.evaluateValue(models, name);
-                args = args.substr(0, args.length - 2);
-                args = args.split['.'] && args.split['.'].map(this.evaluateExpression.bind(this, models));
-                window.F = window.F || {};
-                window.F[this.tmpCount] = function () {
-                    name.apply(this, args);
-                };
-                var str = "F[" + this.tmpCount + "]()";
-                this.tmpCount++;
+                args = args.substr(0, --args.length);
+                var _b = this.evaluateValueAndModel(models, name), value = _b.value, model = _b.model;
+                var func = value;
+                var argArr = args.split('.').map(function (arg) {
+                    return arg.indexOf('#') === 0 ?
+                        arg.substr(1) :
+                        exp(arg);
+                });
+                func = func.bind.apply(func, [model].concat(argArr));
+                var index = ho.components.temp.set(func);
+                var str = "ho.components.temp.call(" + index + ")";
                 return str;
             };
             Renderer.prototype.copyNode = function (node) {
@@ -208,29 +234,6 @@ var ho;
                     children: node.children.map(copyNode)
                 };
                 return n;
-            };
-            Renderer.prototype.repl = function (str, models) {
-                //var regex = /{([^{}|]+)}/;
-                //var regexG = /{([^{}|]+)}/g;
-                var regexG = /{(.+?)}}?/g;
-                var m = str.match(regexG);
-                if (!m)
-                    return str;
-                while (m.length) {
-                    var path = m[0];
-                    path = path.substr(1, path.length - 2);
-                    //path = path.indexOf('{') === 0 ? path.substr(1) : path;
-                    //path = path.indexOf('}') === --path.length ? path.substr(0, path.length-1) : path;
-                    var value = this.evaluate(models, path);
-                    if (value !== undefined) {
-                        if (typeof value === 'function') {
-                            value = "ho.components.Component.getComponent(this)." + path;
-                        }
-                        str = str.replace(m[0], value);
-                    }
-                    m = m.slice(1);
-                }
-                return str;
             };
             return Renderer;
         })();

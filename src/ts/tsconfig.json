@@ -26,6 +26,8 @@
         "./htmlprovider.ts",
         "./options.ts",
         "./registry.ts",
-        "./renderer.ts"
+        "./renderer.ts",
+        "./temp.ts",
+        "./test.ts"
     ]
 }

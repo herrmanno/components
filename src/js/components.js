@@ -17,6 +17,13 @@ var ho;
                 this.element.component = this;
                 this.original_innerHTML = element.innerHTML;
             }
+            Object.defineProperty(Component.prototype, "name", {
+                get: function () {
+                    return Component.getName(this);
+                },
+                enumerable: true,
+                configurable: true
+            });
             Component.prototype.getParent = function () {
                 return Component.getComponent(this.element.parentNode);
             };
@@ -54,8 +61,8 @@ var ho;
                 if (typeof this.html === 'string')
                     p.resolve();
                 if (typeof this.html === 'undefined') {
-                    var name_1 = Component.getName(this);
-                    Component.registry.getHtml(name_1)
+                    //let name = Component.getName(this);
+                    Component.registry.getHtml(this.name)
                         .then(function (html) {
                         self.html = html;
                         p.resolve();

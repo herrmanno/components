@@ -73,4 +73,6 @@ module ho.components {
         }
 
     }
+
+    export var registry = new Registry();
 }

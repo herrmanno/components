@@ -1,6 +1,5 @@
 declare module ho.components {
     class Renderer {
-        private tmpCount;
         private r;
         private cache;
         render(component: Component): void;
@@ -9,6 +8,7 @@ declare module ho.components {
         private domToString(root, indent);
         private evaluate(models, path);
         private evaluateValue(models, path);
+        private evaluateValueAndModel(models, path);
         private evaluateExpression(models, path);
         private evaluateFunction(models, path);
         private copyNode(node);

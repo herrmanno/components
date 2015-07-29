@@ -23,6 +23,7 @@ declare module ho.components {
         };
         static registry: Registry;
         constructor(element: HTMLElement);
+        name: string;
         getParent(): Component;
         _init(): void;
         init(): any;
