@@ -5,6 +5,10 @@ module ho.components {
 
 	import Promise = ho.promise.Promise;
 
+	/**
+		Baseclass for Attributes.
+		Used Attributes needs to be specified by Component#attributes property to get loaded properly.
+	*/
 	export class Attribute {
 
 		protected element: HTMLElement;
@@ -25,9 +29,11 @@ module ho.components {
 			return Attribute.getName(this);
 		}
 
+
 		public update(): void {
 
 		}
+
 
 		static getName(clazz: typeof Attribute | Attribute): string {
             if(clazz instanceof Attribute)
@@ -38,6 +44,7 @@ module ho.components {
 	}
 
 	export class WatchAttribute extends Attribute {
+
 		protected r: RegExp = /#(.+?)#/g;
 
 		constructor(element: HTMLElement, value?: string) {
@@ -50,6 +57,7 @@ module ho.components {
 			}.bind(this));
 			this.value = this.value.replace(/#/g, '');
 		}
+
 
 		protected watch(path: string): void {
 			let pathArr = path.split('.');

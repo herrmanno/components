@@ -5,8 +5,7 @@ declare module ho.components.registry {
     class Registry {
         private components;
         private attributes;
-        register(c: typeof Component): void;
-        registerAttribute(a: typeof Attribute): void;
+        register(ca: typeof Component | typeof Attribute): void;
         run(): void;
         initComponent(component: typeof Component, element?: HTMLElement | Document): void;
         initElement(element: HTMLElement): void;

@@ -2,14 +2,13 @@
 
 class TodoBox extends ho.components.Component {
 
+	attributes = ['Centered']
+
 	requires = ["TodoCount", "TodoInput", "TodoList"];
 
 	html =
-		`<style>
-			todobox {
-				border: 1px dashed red;
-			}
-		</style>
-		<TodoCount/><TodoInput/><TodoList/>`;
+		`<TodoCount/>
+		<TodoInput centered="30"/>
+		<TodoList/>`;
 
 }

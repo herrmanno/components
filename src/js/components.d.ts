@@ -11,6 +11,10 @@ declare module ho.components {
         required?: boolean;
         default?: any;
     }
+    /**
+        Baseclass for Components
+        important: do initialization work in Component#init
+    */
     class Component {
         element: ComponentElement;
         original_innerHTML: string;
@@ -25,11 +29,16 @@ declare module ho.components {
         name: string;
         getParent(): Component;
         _init(): void;
+        /**
+            Method that get called after initialization of a new instance.
+            Do init-work here.
+            May return a Promise.
+        */
         init(): any;
         update(): void;
         render(): void;
         /**
-        *  Assure that this instance has an valid html attribute and if not load it.
+        *  Assure that this instance has an valid html attribute and if not load and set it.
         */
         private initHTML();
         private initProperties();

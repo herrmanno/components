@@ -8,26 +8,16 @@ module ho.components.registry {
 
         private components: Array<typeof Component> = [];
         private attributes: Array<typeof Attribute> = [];
-        //private options: RegistryOptions;
-        //private htmlMap: {[key: string]: string} = {};
 
-        /*
-        constructor(options?: any) {
-            this.options = new RegistryOptions(options);
-        }
 
-        public setOptions(options?: any) {
-            this.options = new RegistryOptions(options);
-        }
-        */
-
-        public register(c: typeof Component): void {
-            this.components.push(c);
-            document.createElement(Component.getName(c));
-        }
-
-        public registerAttribute(a: typeof Attribute): void {
-            this.attributes.push(a);
+        public register(ca: typeof Component | typeof Attribute): void {
+            if(ca.prototype instanceof Component) {
+                this.components.push(<typeof Component>ca);
+                document.createElement(Component.getName(<typeof Component>ca));
+            }
+            else if(ca.prototype instanceof Attribute) {
+                this.attributes.push(<typeof Attribute>ca);
+            }
         }
 
         public run(): void {
@@ -86,35 +76,11 @@ module ho.components.registry {
             return new Promise<typeof Attribute, string>((resolve, reject) => {
                 ho.components.attributeprovider.instance.getAttribute(name)
                 .then((attribute) => {
-                    self.registerAttribute(attribute);
+                    self.register(attribute);
                     resolve(attribute);
                 });
             });
-            //return this.options.componentProvider.getComponent(name)
         }
-
-        /*
-        public getHtml(name: string): Promise {
-            let p = new Promise();
-
-            if(this.htmlMap[name] !== undefined) {
-                p.resolve(this.htmlMap[name])
-            }
-            else {
-                this.options.htmlProvider.getHTML(name)
-                .then((html) => {
-                    p.resolve(html);
-                });
-            }
-
-            return p;
-        }
-
-        public render(component: Component): void {
-            this.options.renderer.render(component);
-        }
-
-        */
 
     }
 

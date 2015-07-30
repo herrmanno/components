@@ -22,18 +22,18 @@ module ho.components {
         default?: any;
     }
 
+    /**
+        Baseclass for Components
+        important: do initialization work in Component#init
+    */
     export class Component {
         element: ComponentElement;
         original_innerHTML: string;
         html: string;
         properties: Array<string|IProprety> = [];
         attributes: Array<string> = [];
-        //property: {[key: string]: string} = {};
         requires: Array<string> = [];
         children: {[key: string]: any} = {};
-
-        //static registry: Registry = new Registry();
-        //static name: string;
 
         constructor(element: HTMLElement) {
             //------- init Elemenet and Elements' original innerHTML
@@ -66,6 +66,11 @@ module ho.components {
             });
         }
 
+        /**
+            Method that get called after initialization of a new instance.
+            Do init-work here.
+            May return a Promise.
+        */
         public init(): any {}
 
         public update(): void {return void 0;}
@@ -83,7 +88,7 @@ module ho.components {
     	};
 
         /**
-        *  Assure that this instance has an valid html attribute and if not load it.
+        *  Assure that this instance has an valid html attribute and if not load and set it.
         */
         private initHTML(): Promise<any,any> {
             let p = new Promise();

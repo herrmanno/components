@@ -12,23 +12,14 @@ var ho;
                     this.components = [];
                     this.attributes = [];
                 }
-                //private options: RegistryOptions;
-                //private htmlMap: {[key: string]: string} = {};
-                /*
-                constructor(options?: any) {
-                    this.options = new RegistryOptions(options);
-                }
-        
-                public setOptions(options?: any) {
-                    this.options = new RegistryOptions(options);
-                }
-                */
-                Registry.prototype.register = function (c) {
-                    this.components.push(c);
-                    document.createElement(components.Component.getName(c));
-                };
-                Registry.prototype.registerAttribute = function (a) {
-                    this.attributes.push(a);
+                Registry.prototype.register = function (ca) {
+                    if (ca.prototype instanceof components.Component) {
+                        this.components.push(ca);
+                        document.createElement(components.Component.getName(ca));
+                    }
+                    else if (ca.prototype instanceof components.Attribute) {
+                        this.attributes.push(ca);
+                    }
                 };
                 Registry.prototype.run = function () {
                     var _this = this;
@@ -82,11 +73,10 @@ var ho;
                     return new Promise(function (resolve, reject) {
                         ho.components.attributeprovider.instance.getAttribute(name)
                             .then(function (attribute) {
-                            self.registerAttribute(attribute);
+                            self.register(attribute);
                             resolve(attribute);
                         });
                     });
-                    //return this.options.componentProvider.getComponent(name)
                 };
                 return Registry;
             })();

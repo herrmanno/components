@@ -7,8 +7,8 @@ var ho;
             ho.components.registry.instance.run();
         }
         components.run = run;
-        function register(component) {
-            ho.components.registry.instance.register(component);
+        function register(c) {
+            ho.components.registry.instance.register(c);
         }
         components.register = register;
     })(components = ho.components || (ho.components = {}));

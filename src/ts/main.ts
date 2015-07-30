@@ -5,7 +5,7 @@ module ho.components {
 		ho.components.registry.instance.run();
 	}
 
-	export function register(component: typeof Component): void {
-		ho.components.registry.instance.register(component);
+	export function register(c: typeof Component | typeof Attribute): void {
+		ho.components.registry.instance.register(c);
 	}
 }

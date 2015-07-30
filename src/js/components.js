@@ -12,13 +12,14 @@ var ho;
         var HtmlProvider = ho.components.htmlprovider.instance;
         var Renderer = ho.components.renderer.instance;
         var Promise = ho.promise.Promise;
+        /**
+            Baseclass for Components
+            important: do initialization work in Component#init
+        */
         var Component = (function () {
-            //static registry: Registry = new Registry();
-            //static name: string;
             function Component(element) {
                 this.properties = [];
                 this.attributes = [];
-                //property: {[key: string]: string} = {};
                 this.requires = [];
                 this.children = {};
                 //------- init Elemenet and Elements' original innerHTML
@@ -50,6 +51,11 @@ var ho;
                     throw err;
                 });
             };
+            /**
+                Method that get called after initialization of a new instance.
+                Do init-work here.
+                May return a Promise.
+            */
             Component.prototype.init = function () { };
             Component.prototype.update = function () { return void 0; };
             Component.prototype.render = function () {
@@ -61,7 +67,7 @@ var ho;
             };
             ;
             /**
-            *  Assure that this instance has an valid html attribute and if not load it.
+            *  Assure that this instance has an valid html attribute and if not load and set it.
             */
             Component.prototype.initHTML = function () {
                 var p = new Promise();

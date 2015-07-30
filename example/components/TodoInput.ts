@@ -4,10 +4,15 @@ declare var Store: any;
 
 class TodoInput extends ho.components.Component {
 
-	attributes = ['Disable', 'Centered'];
+	attributes = ['Disable', 'Bind'];
+
+	private todo: {text: string, done:boolean} = {
+		text: '',
+		done: false
+	}
 
 	html =
-		`<input id='todoinput' placeholder='next todo?' centered="30"/>
+		`<input id='todoinput' placeholder='next todo?' bind='todo.text'/>
 		<button id='addbtn' onclick='{#addTodo()};' disable='!#children.todoinput.value#'>Add</button>`;
 		/*
 		`<input id='todoinput' onkeyup='{toggleButton}(this.value);' placeholder='next todo?'/>
@@ -19,12 +24,14 @@ class TodoInput extends ho.components.Component {
 	}
 
 	addTodo() {
-		let value = this.children['todoinput'].value;
-		Store.addTodo({text: value, done: false});
+		//let value = this.children['todoinput'].value;
+		Store.addTodo(this.todo);
 	}
 
+	/*
 	toggleButton(v) {
 		this.children['addbtn'].disabled = !this.children['todoinput'].value;
 	}
+	*/
 
 };

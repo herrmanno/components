@@ -9,10 +9,6 @@ var ho;
 (function (ho) {
     var components;
     (function (components) {
-        /**
-            Baseclass for Attributes.
-            Used Attributes needs to be specified by Component#attributes property to get loaded properly.
-        */
         var Attribute = (function () {
             function Attribute(element, value) {
                 this.element = element;
