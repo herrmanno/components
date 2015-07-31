@@ -61,12 +61,10 @@ var ho;
                 };
                 Registry.prototype.loadComponent = function (name) {
                     var self = this;
-                    return new Promise(function (resolve, reject) {
-                        ho.components.componentprovider.instance.getComponent(name)
-                            .then(function (component) {
-                            self.register(component);
-                            resolve(component);
-                        });
+                    return ho.components.componentprovider.instance.getComponent(name)
+                        .then(function (component) {
+                        self.register(component);
+                        return component;
                     });
                     //return this.options.componentProvider.getComponent(name)
                 };

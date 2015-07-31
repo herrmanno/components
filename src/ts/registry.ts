@@ -69,12 +69,10 @@ module ho.components.registry {
 
         public loadComponent(name: string): Promise<typeof Component, string> {
             let self = this;
-            return new Promise<typeof Component, string>((resolve, reject) => {
-                ho.components.componentprovider.instance.getComponent(name)
-                .then((component) => {
-                    self.register(component);
-                    resolve(component);
-                });
+            return ho.components.componentprovider.instance.getComponent(name)
+            .then((component) => {
+                self.register(component);
+                return component;
             });
             //return this.options.componentProvider.getComponent(name)
         }
