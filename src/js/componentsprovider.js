@@ -5,11 +5,13 @@ var ho;
         var componentprovider;
         (function (componentprovider) {
             var Promise = ho.promise.Promise;
+            componentprovider.mapping = {};
             var ComponentProvider = (function () {
                 function ComponentProvider() {
                     this.useMin = false;
                 }
                 ComponentProvider.prototype.resolve = function (name) {
+                    name = name.split('.').join('/');
                     return this.useMin ?
                         "components/" + name + ".min.js" :
                         "components/" + name + ".js";
@@ -17,18 +19,25 @@ var ho;
                 ComponentProvider.prototype.getComponent = function (name) {
                     var _this = this;
                     return new Promise(function (resolve, reject) {
-                        var src = _this.resolve(name);
+                        var src = componentprovider.mapping[name] || _this.resolve(name);
                         var script = document.createElement('script');
                         script.onload = function () {
                             //Component.register(window[name]);
-                            if (typeof window[name] === 'function')
-                                resolve(window[name]);
+                            if (typeof this.get(name) === 'function')
+                                resolve(this.get(name));
                             else
                                 reject("Error while loading Component " + name);
-                        };
+                        }.bind(_this);
                         script.src = src;
                         document.getElementsByTagName('head')[0].appendChild(script);
                     });
+                };
+                ComponentProvider.prototype.get = function (name) {
+                    var c = window;
+                    name.split('.').forEach(function (part) {
+                        c = c[part];
+                    });
+                    return c;
                 };
                 return ComponentProvider;
             })();
