@@ -4,7 +4,7 @@ var ho;
     var components;
     (function (components) {
         function run() {
-            ho.components.registry.instance.run();
+            return ho.components.registry.instance.run();
         }
         components.run = run;
         function register(c) {

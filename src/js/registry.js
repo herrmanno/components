@@ -22,16 +22,18 @@ var ho;
                     }
                 };
                 Registry.prototype.run = function () {
-                    var _this = this;
-                    this.components.forEach(function (c) {
-                        _this.initComponent(c);
+                    var initComponent = this.initComponent.bind(this);
+                    var promises = this.components.map(function (c) {
+                        return initComponent(c);
                     });
+                    return Promise.all(promises);
                 };
                 Registry.prototype.initComponent = function (component, element) {
                     if (element === void 0) { element = document; }
-                    Array.prototype.forEach.call(element.querySelectorAll(components.Component.getName(component)), function (e) {
-                        new component(e)._init();
+                    var promises = Array.prototype.map.call(element.querySelectorAll(components.Component.getName(component)), function (e) {
+                        return new component(e)._init();
                     });
+                    return Promise.all(promises);
                 };
                 Registry.prototype.initElement = function (element) {
                     var _this = this;

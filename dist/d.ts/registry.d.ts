@@ -6,8 +6,8 @@ declare module ho.components.registry {
         private components;
         private attributes;
         register(ca: typeof Component | typeof Attribute): void;
-        run(): void;
-        initComponent(component: typeof Component, element?: HTMLElement | Document): void;
+        run(): Promise<any, any>;
+        initComponent(component: typeof Component, element?: HTMLElement | Document): Promise<any, any>;
         initElement(element: HTMLElement): void;
         hasComponent(name: string): boolean;
         hasAttribute(name: string): boolean;

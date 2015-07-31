@@ -20,16 +20,24 @@ module ho.components.registry {
             }
         }
 
-        public run(): void {
-            this.components.forEach((c)=>{
-                this.initComponent(c);
+        public run(): Promise<any, any> {
+            let initComponent: (c: typeof Component)=>Promise<any, any> = this.initComponent.bind(this);
+            let promises: Array<Promise<any, any>> = this.components.map((c)=>{
+                return initComponent(c);
             });
+
+            return Promise.all(promises);
         }
 
-        public initComponent(component: typeof Component, element:HTMLElement|Document=document): void {
-            Array.prototype.forEach.call(element.querySelectorAll(Component.getName(component)), function(e) {
-				new component(e)._init();
-			});
+        public initComponent(component: typeof Component, element:HTMLElement|Document=document): Promise<any, any> {
+            let promises: Array<Promise<any, any>> = Array.prototype.map.call(
+                element.querySelectorAll(Component.getName(component)),
+                function(e): Promise<any, any> {
+	                return new component(e)._init();
+                }
+			);
+
+            return Promise.all(promises);
         }
 
         public initElement(element: HTMLElement): void {

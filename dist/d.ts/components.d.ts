@@ -3,6 +3,7 @@
 /// <reference path="attribute.d.ts" />
 /// <reference path="../../bower_components/ho-promise/dist/d.ts/promise.d.ts" />
 declare module ho.components {
+    import Promise = ho.promise.Promise;
     interface ComponentElement extends HTMLElement {
         component?: Component;
     }
@@ -27,8 +28,9 @@ declare module ho.components {
         };
         constructor(element: HTMLElement);
         name: string;
+        getName(): string;
         getParent(): Component;
-        _init(): void;
+        _init(): Promise<any, any>;
         /**
             Method that get called after initialization of a new instance.
             Do init-work here.
@@ -46,6 +48,6 @@ declare module ho.components {
         private initAttributes();
         private loadRequirements();
         static getComponent(element: ComponentElement): Component;
-        static getName(clazz: typeof Component | Component): string;
+        static getName(clazz: (typeof Component) | (Component)): string;
     }
 }

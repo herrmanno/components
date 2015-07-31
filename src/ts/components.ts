@@ -46,24 +46,35 @@ module ho.components {
             return Component.getName(this);
         }
 
+        public getName(): string {
+            return this.name;
+        }
+
         public getParent(): Component {
             return Component.getComponent(<ComponentElement>this.element.parentNode);
         }
 
-        public _init(): void {
+        public _init(): Promise<any, any> {
             let render = this.render.bind(this);
             //-------- init Properties
             this.initProperties();
 
             //------- call init() & loadRequirements() -> then render
             let ready = [this.initHTML(), Promise.create(this.init()), this.loadRequirements()];
+
+            let p = new Promise<any, any>();
+
             Promise.all(ready)
             .then(() => {
+                p.resolve();
                 render();
             })
             .catch((err) => {
+                p.reject(err);
                 throw err;
             });
+
+            return p;
         }
 
         /**
@@ -192,7 +203,7 @@ module ho.components {
     		return element.component;
         }
 
-        static getName(clazz: typeof Component | Component): string {
+        static getName(clazz: (typeof Component) | (Component)): string {
             if(clazz instanceof Component)
                 return clazz.constructor.toString().match(/\w+/g)[1];
             else

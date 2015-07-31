@@ -34,6 +34,9 @@ var ho;
                 enumerable: true,
                 configurable: true
             });
+            Component.prototype.getName = function () {
+                return this.name;
+            };
             Component.prototype.getParent = function () {
                 return Component.getComponent(this.element.parentNode);
             };
@@ -43,13 +46,17 @@ var ho;
                 this.initProperties();
                 //------- call init() & loadRequirements() -> then render
                 var ready = [this.initHTML(), Promise.create(this.init()), this.loadRequirements()];
+                var p = new Promise();
                 Promise.all(ready)
                     .then(function () {
+                    p.resolve();
                     render();
                 })
                     .catch(function (err) {
+                    p.reject(err);
                     throw err;
                 });
+                return p;
             };
             /**
                 Method that get called after initialization of a new instance.
