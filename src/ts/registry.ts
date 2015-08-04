@@ -69,12 +69,49 @@ module ho.components.registry {
 
         public loadComponent(name: string): Promise<typeof Component, string> {
             let self = this;
-            return ho.components.componentprovider.instance.getComponent(name)
+
+            return this.getParentOfComponent(name)
+            .then((parent) => {
+                if(self.hasComponent(parent) || parent === 'ho.components.Component')
+                    return true;
+                else return self.loadComponent(parent);
+            })
+            .then((parentType) => {
+                return ho.components.componentprovider.instance.getComponent(name)
+            })
             .then((component) => {
                 self.register(component);
                 return component;
             });
             //return this.options.componentProvider.getComponent(name)
+        }
+
+        protected getParentOfComponent(name: string): Promise<string, any> {
+            return new Promise((resolve, reject) => {
+
+                let xmlhttp = new XMLHttpRequest();
+                xmlhttp.onreadystatechange = () => {
+                    if(xmlhttp.readyState == 4) {
+                        let resp = xmlhttp.responseText;
+                        if(xmlhttp.status == 200) {
+                            let m = resp.match(/}\)\((.*)\);/);
+                            if(m !== null) {
+                                resolve(m[1]);
+                            }
+                            else {
+                                resolve(null);
+                            }
+                        } else {
+                            reject(resp);
+                        }
+
+                    }
+                };
+
+                xmlhttp.open('GET', ho.components.componentprovider.instance.resolve(name));
+                xmlhttp.send();
+
+            });
         }
 
         public loadAttribute(name: string): Promise<typeof Attribute, string> {

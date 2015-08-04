@@ -61,12 +61,45 @@ var ho;
                 };
                 Registry.prototype.loadComponent = function (name) {
                     var self = this;
-                    return ho.components.componentprovider.instance.getComponent(name)
+                    return this.getParentOfComponent(name)
+                        .then(function (parent) {
+                        if (self.hasComponent(parent) || parent === 'ho.components.Component')
+                            return true;
+                        else
+                            return self.loadComponent(parent);
+                    })
+                        .then(function (parentType) {
+                        return ho.components.componentprovider.instance.getComponent(name);
+                    })
                         .then(function (component) {
                         self.register(component);
                         return component;
                     });
                     //return this.options.componentProvider.getComponent(name)
+                };
+                Registry.prototype.getParentOfComponent = function (name) {
+                    return new Promise(function (resolve, reject) {
+                        var xmlhttp = new XMLHttpRequest();
+                        xmlhttp.onreadystatechange = function () {
+                            if (xmlhttp.readyState == 4) {
+                                var resp = xmlhttp.responseText;
+                                if (xmlhttp.status == 200) {
+                                    var m = resp.match(/}\)\((.*)\);/);
+                                    if (m !== null) {
+                                        resolve(m[1]);
+                                    }
+                                    else {
+                                        resolve(null);
+                                    }
+                                }
+                                else {
+                                    reject(resp);
+                                }
+                            }
+                        };
+                        xmlhttp.open('GET', ho.components.componentprovider.instance.resolve(name));
+                        xmlhttp.send();
+                    });
                 };
                 Registry.prototype.loadAttribute = function (name) {
                     var self = this;

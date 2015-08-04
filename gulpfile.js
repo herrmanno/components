@@ -27,6 +27,7 @@ gulp.task('package', ['clean'], function() {
     .pipe(sourcemap.init())
     .pipe(typescript({
         out: entry,
+        target: 'es5',
         sourceMap: true
     }))
     .pipe(sourcemap.write())
@@ -44,8 +45,13 @@ gulp.task('mini', ['package'], function() {
 });
 
 gulp.task('def', ['mini'], function() {
-    return gulp.src('src/js/**/*.d.ts')
-    .pipe(gulp.dest(dist + '/d.ts'));
+    var ts =  gulp.src(src.ts)
+    .pipe(typescript({
+        out: entry,
+        declaration: true
+    }));
+
+    return ts.dts.pipe(gulp.dest(dist));
 });
 
 

@@ -22,6 +22,7 @@
         "!./node_modules/**/*"
     ],
     "files": [
+        "./MyTodoBox.ts",
         "./TodoBox.ts",
         "./TodoCount.ts",
         "./TodoInput.ts",

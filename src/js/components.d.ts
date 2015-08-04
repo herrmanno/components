@@ -1,7 +1,7 @@
 /// <reference path="htmlprovider.d.ts" />
 /// <reference path="renderer.d.ts" />
 /// <reference path="attribute.d.ts" />
-/// <reference path="../../bower_components/ho-promise/dist/d.ts/promise.d.ts" />
+/// <reference path="../../bower_components/ho-promise/dist/promise.d.ts" />
 declare module ho.components {
     import Promise = ho.promise.Promise;
     interface ComponentElement extends HTMLElement {
@@ -48,6 +48,7 @@ declare module ho.components {
         private initAttributes();
         private loadRequirements();
         static getComponent(element: ComponentElement): Component;
-        static getName(clazz: (typeof Component) | (Component)): string;
+        static getName(clazz: typeof Component): string;
+        static getName(clazz: Component): string;
     }
 }

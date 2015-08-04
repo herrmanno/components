@@ -2,8 +2,8 @@
 
 class App extends ho.components.Component {
 
-    requires = ["TodoBox"];
+    requires = ["MyTodoBox"];
 
-    html = "<TodoBox/>";
+    html = "<MyTodoBox/>";
 
 }

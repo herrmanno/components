@@ -3,7 +3,7 @@
 /// <reference path="./htmlprovider.ts"/>
 /// <reference path="./renderer.ts"/>
 /// <reference path="./attribute.ts"/>
-/// <reference path="../../bower_components/ho-promise/dist/d.ts/promise.d.ts"/>
+/// <reference path="../../bower_components/ho-promise/dist/promise.d.ts"/>
 
 module ho.components {
 
@@ -203,6 +203,8 @@ module ho.components {
     		return element.component;
         }
 
+        static getName(clazz: typeof Component): string;
+        static getName(clazz: Component): string;
         static getName(clazz: (typeof Component) | (Component)): string {
             if(clazz instanceof Component)
                 return clazz.constructor.toString().match(/\w+/g)[1];

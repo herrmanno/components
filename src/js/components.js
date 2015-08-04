@@ -3,7 +3,7 @@
 /// <reference path="./htmlprovider.ts"/>
 /// <reference path="./renderer.ts"/>
 /// <reference path="./attribute.ts"/>
-/// <reference path="../../bower_components/ho-promise/dist/d.ts/promise.d.ts"/>
+/// <reference path="../../bower_components/ho-promise/dist/promise.d.ts"/>
 var ho;
 (function (ho) {
     var components;

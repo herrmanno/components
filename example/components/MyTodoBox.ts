@@ -1,0 +1,1 @@
+class MyTodoBox extends TodoBox {}

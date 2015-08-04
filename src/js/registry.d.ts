@@ -13,6 +13,7 @@ declare module ho.components.registry {
         hasAttribute(name: string): boolean;
         getAttribute(name: string): typeof Attribute;
         loadComponent(name: string): Promise<typeof Component, string>;
+        protected getParentOfComponent(name: string): Promise<string, any>;
         loadAttribute(name: string): Promise<typeof Attribute, string>;
     }
     let instance: Registry;
