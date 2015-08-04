@@ -1,4 +1,4 @@
-/// <reference path="../../dist/d.ts/components.d.ts"/>
+/// <reference path="../../dist/components.d.ts"/>
 
 class TodoBox extends ho.components.Component {
 

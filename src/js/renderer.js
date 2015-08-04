@@ -21,6 +21,7 @@ var ho;
                         type: /[\s|/]*(.*?)[\s|\/|>]/,
                         text: /(?:.|[\r\n])*?[^"'\\]</m,
                     };
+                    this.voids = ["area", "base", "br", "col", "command", "embed", "hr", "img", "input", "keygen", "link", "meta", "param", "source", "track", "wbr"];
                     this.cache = {};
                 }
                 Renderer.prototype.render = function (component) {
@@ -36,12 +37,13 @@ var ho;
                     if (root === void 0) { root = new Node(); }
                     var m;
                     while ((m = this.r.tag.exec(html)) !== null) {
-                        var tag, type, closing, selfClosing, repeat, unClose;
+                        var tag, type, closing, isVoid, selfClosing, repeat, unClose;
                         //------- found some text before next tag
                         if (m.index !== 0) {
                             tag = html.match(this.r.text)[0];
                             tag = tag.substr(0, tag.length - 1);
                             type = 'TEXT';
+                            isVoid = false;
                             selfClosing = true;
                             repeat = false;
                         }
@@ -49,7 +51,8 @@ var ho;
                             tag = m[1].trim();
                             type = (tag + '>').match(this.r.type)[1];
                             closing = tag[0] === '/';
-                            selfClosing = tag[tag.length - 1] === '/';
+                            isVoid = this.isVoid(type);
+                            selfClosing = isVoid || tag[tag.length - 1] === '/';
                             repeat = !!tag.match(this.r.repeat);
                             if (selfClosing && Registry.hasComponent(type)) {
                                 selfClosing = false;
@@ -62,7 +65,7 @@ var ho;
                             break;
                         }
                         else {
-                            root.children.push({ parent: root, html: tag, type: type, selfClosing: selfClosing, repeat: repeat, children: [] });
+                            root.children.push({ parent: root, html: tag, type: type, isVoid: isVoid, selfClosing: selfClosing, repeat: repeat, children: [] });
                             if (!unClose && !selfClosing) {
                                 var result = this.parse(html, root.children[root.children.length - 1]);
                                 html = result.html;
@@ -123,8 +126,12 @@ var ho;
                     var tab = '\t';
                     if (root.html) {
                         html += new Array(indent).join(tab); //tab.repeat(indent);;
-                        if (root.type !== 'TEXT')
-                            html += '<' + root.html + '>';
+                        if (root.type !== 'TEXT') {
+                            if (root.selfClosing && !root.isVoid)
+                                html += '<' + root.html + '/>';
+                            else
+                                html += '<' + root.html + '>';
+                        }
                         else
                             html += root.html;
                     }
@@ -238,6 +245,9 @@ var ho;
                         children: node.children.map(copyNode)
                     };
                     return n;
+                };
+                Renderer.prototype.isVoid = function (name) {
+                    return this.voids.indexOf(name.toLowerCase()) !== -1;
                 };
                 return Renderer;
             })();

@@ -15,6 +15,7 @@ module ho.components.renderer {
         children: Array<Node> = [];
         type: string;
         selfClosing: boolean;
+        isVoid: boolean;
         repeat: boolean;
     }
 
@@ -26,6 +27,8 @@ module ho.components.renderer {
 			type: /[\s|/]*(.*?)[\s|\/|>]/,
 			text: /(?:.|[\r\n])*?[^"'\\]</m,
 		};
+
+        private voids = ["area", "base", "br", "col", "command", "embed", "hr", "img", "input", "keygen", "link", "meta", "param", "source", "track", "wbr"];
 
         private cache: {[key:string]:Node} = {};
 
@@ -48,19 +51,21 @@ module ho.components.renderer {
 
 			var m;
 			while((m = this.r.tag.exec(html)) !== null) {
-				var tag, type, closing, selfClosing, repeat, unClose;
+				var tag, type, closing, isVoid, selfClosing, repeat, unClose;
 				//------- found some text before next tag
 				if(m.index !== 0) {
 					tag = html.match(this.r.text)[0];
 					tag = tag.substr(0, tag.length-1);
 					type = 'TEXT';
+                    isVoid = false;
 					selfClosing = true;
 					repeat = false;
 				} else {
 					tag = m[1].trim();
 					type = (tag+'>').match(this.r.type)[1];
 					closing = tag[0] === '/';
-					selfClosing = tag[tag.length-1] === '/';
+                    isVoid = this.isVoid(type);
+					selfClosing = isVoid || tag[tag.length-1] === '/';
 					repeat = !!tag.match(this.r.repeat);
 
 					if(selfClosing && Registry.hasComponent(type)) {
@@ -76,7 +81,7 @@ module ho.components.renderer {
 				if(closing) {
 					break;
 				} else {
-					root.children.push({parent: root, html: tag, type: type, selfClosing: selfClosing, repeat: repeat, children: []});
+					root.children.push({parent: root, html: tag, type: type, isVoid: isVoid, selfClosing: selfClosing, repeat: repeat, children: []});
 
 					if(!unClose && !selfClosing) {
 						var result = this.parse(html, root.children[root.children.length-1]);
@@ -144,15 +149,19 @@ module ho.components.renderer {
 			return root;
 		}
 
-		private domToString(root, indent): string {
+		private domToString(root: Node, indent: number): string {
 			indent = indent || 0;
 			var html = '';
             const tab: any = '\t';
 
 			if(root.html) {
 				html += new Array(indent).join(tab); //tab.repeat(indent);;
-				if(root.type !== 'TEXT')
-					html += '<' + root.html + '>';
+				if(root.type !== 'TEXT') {
+					if(root.selfClosing && !root.isVoid)
+                        html += '<' + root.html + '/>';
+                    else
+                        html += '<' + root.html + '>';
+                }
 				else html += root.html;
 			}
 
@@ -289,6 +298,10 @@ module ho.components.renderer {
 
 			return n;
 		}
+
+        private isVoid(name: string): boolean {
+            return this.voids.indexOf(name.toLowerCase()) !== -1;
+        }
 
     }
 

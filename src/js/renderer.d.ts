@@ -2,6 +2,7 @@
 declare module ho.components.renderer {
     class Renderer {
         private r;
+        private voids;
         private cache;
         render(component: Component): void;
         private parse(html, root?);
@@ -14,6 +15,7 @@ declare module ho.components.renderer {
         private evaluateExpression(models, path);
         private evaluateFunction(models, path);
         private copyNode(node);
+        private isVoid(name);
     }
     let instance: Renderer;
 }
