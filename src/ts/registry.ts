@@ -92,7 +92,44 @@ module ho.components.registry {
             //return this.options.componentProvider.getComponent(name)
         }
 
+        public loadAttribute(name: string): Promise<typeof Attribute, string> {
+            let self = this;
+
+            return this.getParentOfAttribute(name)
+            .then((parent) => {
+                if(self.hasAttribute(parent) || parent === 'ho.components.Attribute' || parent === 'ho.component.WatchAttribute')
+                    return true;
+                else return self.loadAttribute(parent);
+            })
+            .then((parentType) => {
+                return ho.components.attributeprovider.instance.getAttribute(name)
+            })
+            .then((attribute) => {
+                self.register(attribute);
+                return attribute;
+            });
+
+            /*
+            let self = this;
+            return new Promise<typeof Attribute, string>((resolve, reject) => {
+                ho.components.attributeprovider.instance.getAttribute(name)
+                .then((attribute) => {
+                    self.register(attribute);
+                    resolve(attribute);
+                });
+            });
+            */
+        }
+
         protected getParentOfComponent(name: string): Promise<string, any> {
+            return this.getParentOfClass(ho.components.componentprovider.instance.resolve(name));
+        }
+
+        protected getParentOfAttribute(name: string): Promise<string, any> {
+            return this.getParentOfClass(ho.components.attributeprovider.instance.resolve(name));
+        }
+
+        protected getParentOfClass(path: string): Promise<string, any> {
             return new Promise((resolve, reject) => {
 
                 let xmlhttp = new XMLHttpRequest();
@@ -114,20 +151,9 @@ module ho.components.registry {
                     }
                 };
 
-                xmlhttp.open('GET', ho.components.componentprovider.instance.resolve(name));
+                xmlhttp.open('GET', path);
                 xmlhttp.send();
 
-            });
-        }
-
-        public loadAttribute(name: string): Promise<typeof Attribute, string> {
-            let self = this;
-            return new Promise<typeof Attribute, string>((resolve, reject) => {
-                ho.components.attributeprovider.instance.getAttribute(name)
-                .then((attribute) => {
-                    self.register(attribute);
-                    resolve(attribute);
-                });
             });
         }
 

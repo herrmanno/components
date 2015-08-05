@@ -78,7 +78,40 @@ var ho;
                     });
                     //return this.options.componentProvider.getComponent(name)
                 };
+                Registry.prototype.loadAttribute = function (name) {
+                    var self = this;
+                    return this.getParentOfAttribute(name)
+                        .then(function (parent) {
+                        if (self.hasAttribute(parent) || parent === 'ho.components.Attribute' || parent === 'ho.component.WatchAttribute')
+                            return true;
+                        else
+                            return self.loadAttribute(parent);
+                    })
+                        .then(function (parentType) {
+                        return ho.components.attributeprovider.instance.getAttribute(name);
+                    })
+                        .then(function (attribute) {
+                        self.register(attribute);
+                        return attribute;
+                    });
+                    /*
+                    let self = this;
+                    return new Promise<typeof Attribute, string>((resolve, reject) => {
+                        ho.components.attributeprovider.instance.getAttribute(name)
+                        .then((attribute) => {
+                            self.register(attribute);
+                            resolve(attribute);
+                        });
+                    });
+                    */
+                };
                 Registry.prototype.getParentOfComponent = function (name) {
+                    return this.getParentOfClass(ho.components.componentprovider.instance.resolve(name));
+                };
+                Registry.prototype.getParentOfAttribute = function (name) {
+                    return this.getParentOfClass(ho.components.attributeprovider.instance.resolve(name));
+                };
+                Registry.prototype.getParentOfClass = function (path) {
                     return new Promise(function (resolve, reject) {
                         var xmlhttp = new XMLHttpRequest();
                         xmlhttp.onreadystatechange = function () {
@@ -98,18 +131,8 @@ var ho;
                                 }
                             }
                         };
-                        xmlhttp.open('GET', ho.components.componentprovider.instance.resolve(name));
+                        xmlhttp.open('GET', path);
                         xmlhttp.send();
-                    });
-                };
-                Registry.prototype.loadAttribute = function (name) {
-                    var self = this;
-                    return new Promise(function (resolve, reject) {
-                        ho.components.attributeprovider.instance.getAttribute(name)
-                            .then(function (attribute) {
-                            self.register(attribute);
-                            resolve(attribute);
-                        });
                     });
                 };
                 return Registry;
