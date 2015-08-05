@@ -97,7 +97,7 @@ module ho.components.registry {
 
             return this.getParentOfAttribute(name)
             .then((parent) => {
-                if(self.hasAttribute(parent) || parent === 'ho.components.Attribute' || parent === 'ho.component.WatchAttribute')
+                if(self.hasAttribute(parent) || parent === 'ho.components.Attribute' || parent === 'ho.components.WatchAttribute')
                     return true;
                 else return self.loadAttribute(parent);
             })

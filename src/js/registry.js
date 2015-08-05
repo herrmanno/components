@@ -82,7 +82,7 @@ var ho;
                     var self = this;
                     return this.getParentOfAttribute(name)
                         .then(function (parent) {
-                        if (self.hasAttribute(parent) || parent === 'ho.components.Attribute' || parent === 'ho.component.WatchAttribute')
+                        if (self.hasAttribute(parent) || parent === 'ho.components.Attribute' || parent === 'ho.components.WatchAttribute')
                             return true;
                         else
                             return self.loadAttribute(parent);
