@@ -157,9 +157,11 @@ module ho.components.renderer {
 			if(root.html) {
 				html += new Array(indent).join(tab); //tab.repeat(indent);;
 				if(root.type !== 'TEXT') {
-					//if(root.selfClosing && !root.isVoid)
-                    //    html += '<' + root.html + '/>';
-                    //else
+					if(root.selfClosing && !root.isVoid) {
+                        html += '<' + root.html.substr(0, --root.html.length) + '>';
+                        html += '</'+root.type+'>\n';
+                    }
+                    else
                         html += '<' + root.html + '>';
                 }
 				else html += root.html;
