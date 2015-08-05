@@ -127,10 +127,10 @@ var ho;
                     if (root.html) {
                         html += new Array(indent).join(tab); //tab.repeat(indent);;
                         if (root.type !== 'TEXT') {
-                            if (root.selfClosing && !root.isVoid)
-                                html += '<' + root.html + '/>';
-                            else
-                                html += '<' + root.html + '>';
+                            //if(root.selfClosing && !root.isVoid)
+                            //    html += '<' + root.html + '/>';
+                            //else
+                            html += '<' + root.html + '>';
                         }
                         else
                             html += root.html;
