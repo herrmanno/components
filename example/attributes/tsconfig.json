@@ -22,9 +22,9 @@
         "!./node_modules/**/*"
     ],
     "files": [
-        "./bind.ts",
-        "./bordered.ts",
-        "./centered.ts",
-        "./disable.ts"
+        "./Bind/bind.ts",
+        "./Bordered/bordered.ts",
+        "./Centered/centered.ts",
+        "./Disable/disable.ts"
     ]
 }

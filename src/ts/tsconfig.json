@@ -29,6 +29,7 @@
         "./main.ts",
         "./registry.ts",
         "./renderer.ts",
+        "./styler.ts",
         "./temp.ts"
     ]
 }

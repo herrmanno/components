@@ -11,6 +11,10 @@ var ho;
                     this.useMin = false;
                 }
                 AttributeProvider.prototype.resolve = function (name) {
+                    if (ho.components.dir) {
+                        name += '.' + name.split('.').pop();
+                    }
+                    name = name.split('.').join('/');
                     return this.useMin ?
                         "attributes/" + name + ".min.js" :
                         "attributes/" + name + ".js";

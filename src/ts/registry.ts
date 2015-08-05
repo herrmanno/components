@@ -40,10 +40,16 @@ module ho.components.registry {
             return Promise.all(promises);
         }
 
-        public initElement(element: HTMLElement): void {
-            this.components.forEach((component) => {
-                this.initComponent(component, element);
-            });
+        public initElement(element: HTMLElement): Promise<any, any> {
+            let initComponent: (c: typeof Component, element: HTMLElement)=>Promise<any, any> = this.initComponent.bind(this);
+            let promises: Array<Promise<any, any>> = Array.prototype.map.call(
+                this.components,
+                component => {
+                    return initComponent(component, element);
+                }
+            );
+
+            return Promise.all(promises);
         }
 
         public hasComponent(name: string): boolean {

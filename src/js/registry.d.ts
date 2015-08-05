@@ -8,7 +8,7 @@ declare module ho.components.registry {
         register(ca: typeof Component | typeof Attribute): void;
         run(): Promise<any, any>;
         initComponent(component: typeof Component, element?: HTMLElement | Document): Promise<any, any>;
-        initElement(element: HTMLElement): void;
+        initElement(element: HTMLElement): Promise<any, any>;
         hasComponent(name: string): boolean;
         hasAttribute(name: string): boolean;
         getAttribute(name: string): typeof Attribute;

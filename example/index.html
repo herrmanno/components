@@ -6,7 +6,7 @@
 		<script src="../bower_components/ho-watch/dist/watch.js" charset="utf-8"></script>
 		<script type="text/javascript" src="store.js"></script>
 		<script type="text/javascript" src="../dist/components.js"></script>
-		<script type="text/javascript" src="components/app.js"></script>
+		<script type="text/javascript" src="components/App/app.js"></script>
 		<!--
 		-->
 	</head>
@@ -15,6 +15,7 @@
 		<App></App>
 
 		<script type="text/javascript">
+			ho.components.dir = true;
 			ho.components.register(App);
 			ho.components.run();
 		</script>

@@ -6,6 +6,12 @@ module ho.components.htmlprovider {
         private cache: {[kay:string]:string} = {};
 
         resolve(name: string): string {
+            if(ho.components.dir) {
+                name += '.' + name.split('.').pop();
+            }
+
+            name = name.split('.').join('/');
+
             return `components/${name}.html`;
         }
 

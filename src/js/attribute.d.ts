@@ -1,5 +1,5 @@
 /// <reference path="../../bower_components/ho-watch/dist/d.ts/watch.d.ts" />
-/// <reference path="../../bower_components/ho-promise/dist/d.ts/promise.d.ts" />
+/// <reference path="../../bower_components/ho-promise/dist/promise.d.ts" />
 declare module ho.components {
     /**
         Baseclass for Attributes.

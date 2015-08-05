@@ -10,6 +10,10 @@ var ho;
                     this.cache = {};
                 }
                 HtmlProvider.prototype.resolve = function (name) {
+                    if (ho.components.dir) {
+                        name += '.' + name.split('.').pop();
+                    }
+                    name = name.split('.').join('/');
                     return "components/" + name + ".html";
                 };
                 HtmlProvider.prototype.getHTML = function (name) {

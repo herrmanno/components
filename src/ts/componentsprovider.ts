@@ -8,7 +8,12 @@ module ho.components.componentprovider {
         useMin: boolean = false;
 
         resolve(name: string): string {
+            if(ho.components.dir) {
+                name += '.' + name.split('.').pop();
+            }
+
             name = name.split('.').join('/');
+            
             return this.useMin ?
                 `components/${name}.min.js` :
                 `components/${name}.js`;

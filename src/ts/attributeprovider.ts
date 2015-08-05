@@ -8,6 +8,12 @@ module ho.components.attributeprovider {
         useMin: boolean = false;
 
         resolve(name: string): string {
+            if(ho.components.dir) {
+                name += '.' + name.split('.').pop();
+            }
+
+            name = name.split('.').join('/');
+            
             return this.useMin ?
                 `attributes/${name}.min.js` :
                 `attributes/${name}.js`;

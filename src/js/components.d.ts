@@ -1,6 +1,7 @@
 /// <reference path="htmlprovider.d.ts" />
 /// <reference path="renderer.d.ts" />
 /// <reference path="attribute.d.ts" />
+/// <reference path="styler.d.ts" />
 /// <reference path="../../bower_components/ho-promise/dist/promise.d.ts" />
 declare module ho.components {
     import Promise = ho.promise.Promise;
@@ -20,6 +21,7 @@ declare module ho.components {
         element: ComponentElement;
         original_innerHTML: string;
         html: string;
+        style: string;
         properties: Array<string | IProprety>;
         attributes: Array<string>;
         requires: Array<string>;
@@ -39,6 +41,7 @@ declare module ho.components {
         init(): any;
         update(): void;
         render(): void;
+        private initStyle();
         /**
         *  Assure that this instance has an valid html attribute and if not load and set it.
         */

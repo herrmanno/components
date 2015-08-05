@@ -52,7 +52,7 @@ declare module ho.components.registry {
         register(ca: typeof Component | typeof Attribute): void;
         run(): Promise<any, any>;
         initComponent(component: typeof Component, element?: HTMLElement | Document): Promise<any, any>;
-        initElement(element: HTMLElement): void;
+        initElement(element: HTMLElement): Promise<any, any>;
         hasComponent(name: string): boolean;
         hasAttribute(name: string): boolean;
         getAttribute(name: string): typeof Attribute;
@@ -65,6 +65,7 @@ declare module ho.components.registry {
 declare module ho.components {
     function run(): ho.promise.Promise<any, any>;
     function register(c: typeof Component | typeof Attribute): void;
+    let dir: boolean;
 }
 declare module ho.components.htmlprovider {
     import Promise = ho.promise.Promise;
@@ -100,6 +101,12 @@ declare module ho.components.renderer {
     }
     let instance: Renderer;
 }
+declare module ho.components.styler {
+    interface IStyler {
+        applyStyle(component: Component, css?: string): void;
+    }
+    let instance: IStyler;
+}
 declare module ho.components {
     import Promise = ho.promise.Promise;
     interface ComponentElement extends HTMLElement {
@@ -118,6 +125,7 @@ declare module ho.components {
         element: ComponentElement;
         original_innerHTML: string;
         html: string;
+        style: string;
         properties: Array<string | IProprety>;
         attributes: Array<string>;
         requires: Array<string>;
@@ -137,6 +145,7 @@ declare module ho.components {
         init(): any;
         update(): void;
         render(): void;
+        private initStyle();
         /**
         *  Assure that this instance has an valid html attribute and if not load and set it.
         */

@@ -11,5 +11,6 @@ var ho;
             ho.components.registry.instance.register(c);
         }
         components.register = register;
+        components.dir = false;
     })(components = ho.components || (ho.components = {}));
 })(ho || (ho = {}));

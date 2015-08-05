@@ -1,8 +1,16 @@
-/// <reference path="../../dist/d.ts/components.d.ts"/>
+/// <reference path="../../../dist/components.d.ts"/>
+
 
 class TodoList extends ho.components.Component {
 
 	todos: any[] = Store.todos;
+
+	html = "TodoList.html";
+	style =
+		`li {
+			color: red;
+			max-width: 100px;
+		}`;
 
 	init() {
 		Store.listeners.push(function() {
@@ -20,6 +28,5 @@ class TodoList extends ho.components.Component {
 		Store.todos.splice(index, 1);
 		Store.update();
 	}
-
 
 }

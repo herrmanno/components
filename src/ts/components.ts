@@ -3,6 +3,7 @@
 /// <reference path="./htmlprovider.ts"/>
 /// <reference path="./renderer.ts"/>
 /// <reference path="./attribute.ts"/>
+/// <reference path="./styler.ts"/>
 /// <reference path="../../bower_components/ho-promise/dist/promise.d.ts"/>
 
 module ho.components {
@@ -27,13 +28,14 @@ module ho.components {
         important: do initialization work in Component#init
     */
     export class Component {
-        element: ComponentElement;
-        original_innerHTML: string;
-        html: string;
-        properties: Array<string|IProprety> = [];
-        attributes: Array<string> = [];
-        requires: Array<string> = [];
-        children: {[key: string]: any} = {};
+        public element: ComponentElement;
+        public original_innerHTML: string;
+        public html: string = '';
+        public style: string = '';
+        public properties: Array<string|IProprety> = [];
+        public attributes: Array<string> = [];
+        public requires: Array<string> = [];
+        public children: {[key: string]: any} = {};
 
         constructor(element: HTMLElement) {
             //------- init Elemenet and Elements' original innerHTML
@@ -89,14 +91,30 @@ module ho.components {
         public render(): void {
     		Renderer.render(this);
 
-    		Registry.initElement(this.element);
+    		Registry.initElement(this.element)
+            .then(function() {
 
-    		this.initChildren();
+                this.initChildren();
 
-            this.initAttributes();
+                this.initStyle();
 
-			this.update();
+                this.initAttributes();
+
+    			this.update();
+
+            }.bind(this));
     	};
+
+        private initStyle(): void {
+            if(typeof this.style === 'undefined')
+                return;
+            if(this.style === null)
+                return;
+            if(typeof this.style === 'string' && this.style.length === 0)
+                return;
+
+            styler.instance.applyStyle(this);
+        }
 
         /**
         *  Assure that this instance has an valid html attribute and if not load and set it.
@@ -105,18 +123,21 @@ module ho.components {
             let p = new Promise();
             let self = this;
 
-            if(typeof this.html === 'boolean')
-                p.resolve();
-            if(typeof this.html === 'string')
-                p.resolve();
             if(typeof this.html === 'undefined') {
-                //let name = Component.getName(this);
-                HtmlProvider.getHTML(this.name)
-                .then((html) => {
-                    self.html = html;
+                this.html = '';
+                p.resolve();
+            }
+            else {
+                if(this.html.indexOf(".html", this.html.length - ".html".length) !== -1) {
+                    HtmlProvider.getHTML(this.name)
+                    .then((html) => {
+                        self.html = html;
+                        p.resolve();
+                    })
+                    .catch(p.reject);
+                } else {
                     p.resolve();
-                })
-                .catch(p.reject);
+                }
             }
 
             return p;

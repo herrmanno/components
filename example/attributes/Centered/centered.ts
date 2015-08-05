@@ -1,4 +1,4 @@
-/// <reference path="../../dist/d.ts/attribute.d.ts"/>
+/// <reference path="../../../dist/components.d.ts"/>
 
 class Centered extends ho.components.Attribute {
 
@@ -10,8 +10,8 @@ class Centered extends ho.components.Attribute {
 	}
 
 	update() {
-		this.element.style.position = 'relative';
-		this.element.style.left = `${this.margin}%`;
+		this.element.style.display = 'block';
+		this.element.style.margin = 'auto';
 		this.element.style.width = `${this.value}%`;
 	}
 }

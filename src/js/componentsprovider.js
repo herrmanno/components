@@ -11,6 +11,9 @@ var ho;
                     this.useMin = false;
                 }
                 ComponentProvider.prototype.resolve = function (name) {
+                    if (ho.components.dir) {
+                        name += '.' + name.split('.').pop();
+                    }
                     name = name.split('.').join('/');
                     return this.useMin ?
                         "components/" + name + ".min.js" :

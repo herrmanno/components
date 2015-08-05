@@ -3,6 +3,7 @@
 /// <reference path="./htmlprovider.ts"/>
 /// <reference path="./renderer.ts"/>
 /// <reference path="./attribute.ts"/>
+/// <reference path="./styler.ts"/>
 /// <reference path="../../bower_components/ho-promise/dist/promise.d.ts"/>
 var ho;
 (function (ho) {
@@ -18,6 +19,8 @@ var ho;
         */
         var Component = (function () {
             function Component(element) {
+                this.html = '';
+                this.style = '';
                 this.properties = [];
                 this.attributes = [];
                 this.requires = [];
@@ -67,30 +70,46 @@ var ho;
             Component.prototype.update = function () { return void 0; };
             Component.prototype.render = function () {
                 Renderer.render(this);
-                Registry.initElement(this.element);
-                this.initChildren();
-                this.initAttributes();
-                this.update();
+                Registry.initElement(this.element)
+                    .then(function () {
+                    this.initChildren();
+                    this.initStyle();
+                    this.initAttributes();
+                    this.update();
+                }.bind(this));
             };
             ;
+            Component.prototype.initStyle = function () {
+                if (typeof this.style === 'undefined')
+                    return;
+                if (this.style === null)
+                    return;
+                if (typeof this.style === 'string' && this.style.length === 0)
+                    return;
+                components_1.styler.instance.applyStyle(this);
+            };
             /**
             *  Assure that this instance has an valid html attribute and if not load and set it.
             */
             Component.prototype.initHTML = function () {
                 var p = new Promise();
                 var self = this;
-                if (typeof this.html === 'boolean')
-                    p.resolve();
-                if (typeof this.html === 'string')
-                    p.resolve();
                 if (typeof this.html === 'undefined') {
-                    //let name = Component.getName(this);
-                    HtmlProvider.getHTML(this.name)
-                        .then(function (html) {
-                        self.html = html;
+                    this.html = '';
+                    p.resolve();
+                }
+                else {
+                    if (this.html.indexOf(".html", this.html.length - ".html".length) !== -1) {
+                        HtmlProvider.getHTML(this.name)
+                            .then(function (html) {
+                            self.html = html;
+                            p.resolve();
+                        })
+                            .catch(p.reject);
+                    }
+                    else {
                         p.resolve();
-                    })
-                        .catch(p.reject);
+                    }
                 }
                 return p;
             };

@@ -8,4 +8,6 @@ module ho.components {
 	export function register(c: typeof Component | typeof Attribute): void {
 		ho.components.registry.instance.register(c);
 	}
+
+	export let dir: boolean = false;
 }

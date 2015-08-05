@@ -1,5 +1,5 @@
 /// <reference path="../../bower_components/ho-watch/dist/d.ts/watch.d.ts"/>
-/// <reference path="../../bower_components/ho-promise/dist/d.ts/promise.d.ts"/>
+/// <reference path="../../bower_components/ho-promise/dist/promise.d.ts"/>
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }

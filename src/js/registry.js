@@ -36,10 +36,11 @@ var ho;
                     return Promise.all(promises);
                 };
                 Registry.prototype.initElement = function (element) {
-                    var _this = this;
-                    this.components.forEach(function (component) {
-                        _this.initComponent(component, element);
+                    var initComponent = this.initComponent.bind(this);
+                    var promises = Array.prototype.map.call(this.components, function (component) {
+                        return initComponent(component, element);
                     });
+                    return Promise.all(promises);
                 };
                 Registry.prototype.hasComponent = function (name) {
                     return this.components
