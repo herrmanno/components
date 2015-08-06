@@ -8,6 +8,3 @@
 * add possibility to simply change components / html path
 * rigistry#register: do nothing if component registered yet
 * component#html: default should be null - bolean shouldnt be allowed. set html = '' to prevent rendering
-
-
-# TEST
