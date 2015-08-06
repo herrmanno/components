@@ -8,12 +8,15 @@ module ho.components.componentprovider {
         useMin: boolean = false;
 
         resolve(name: string): string {
+            if(!!mapping[name])
+                return mapping[name];
+
             if(ho.components.dir) {
                 name += '.' + name.split('.').pop();
             }
 
             name = name.split('.').join('/');
-            
+
             return this.useMin ?
                 `components/${name}.min.js` :
                 `components/${name}.js`;
@@ -21,7 +24,7 @@ module ho.components.componentprovider {
 
         getComponent(name: string): Promise<typeof Component, string> {
             return new Promise<typeof Component, any>((resolve, reject) => {
-                let src = mapping[name] || this.resolve(name);
+                let src = this.resolve(name);
                 let script = document.createElement('script');
                 script.onload = function() {
                     //Component.register(window[name]);

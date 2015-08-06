@@ -12,6 +12,8 @@ var ho;
                     this.useMin = false;
                 }
                 AttributeProvider.prototype.resolve = function (name) {
+                    if (!!attributeprovider.mapping[name])
+                        return attributeprovider.mapping[name];
                     if (ho.components.dir) {
                         name += '.' + name.split('.').pop();
                     }
@@ -23,7 +25,7 @@ var ho;
                 AttributeProvider.prototype.getAttribute = function (name) {
                     var _this = this;
                     return new Promise(function (resolve, reject) {
-                        var src = attributeprovider.mapping[name] || _this.resolve(name);
+                        var src = _this.resolve(name);
                         var script = document.createElement('script');
                         script.onload = function () {
                             //Component.register(window[name]);

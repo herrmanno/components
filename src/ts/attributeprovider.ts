@@ -11,6 +11,9 @@ module ho.components.attributeprovider {
 
 
         resolve(name: string): string {
+            if(!!mapping[name])
+                return mapping[name];
+
             if(ho.components.dir) {
                 name += '.' + name.split('.').pop();
             }
@@ -24,7 +27,7 @@ module ho.components.attributeprovider {
 
         getAttribute(name: string): Promise<typeof Attribute, string> {
             return new Promise<typeof Attribute, any>((resolve, reject) => {
-                let src = mapping[name] || this.resolve(name);
+                let src = this.resolve(name);
                 let script = document.createElement('script');
                 script.onload = function() {
                     //Component.register(window[name]);

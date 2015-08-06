@@ -11,6 +11,8 @@ var ho;
                     this.useMin = false;
                 }
                 ComponentProvider.prototype.resolve = function (name) {
+                    if (!!componentprovider.mapping[name])
+                        return componentprovider.mapping[name];
                     if (ho.components.dir) {
                         name += '.' + name.split('.').pop();
                     }
@@ -22,7 +24,7 @@ var ho;
                 ComponentProvider.prototype.getComponent = function (name) {
                     var _this = this;
                     return new Promise(function (resolve, reject) {
-                        var src = componentprovider.mapping[name] || _this.resolve(name);
+                        var src = _this.resolve(name);
                         var script = document.createElement('script');
                         script.onload = function () {
                             //Component.register(window[name]);
