@@ -6,6 +6,7 @@ var ho;
         var attributeprovider;
         (function (attributeprovider) {
             var Promise = ho.promise.Promise;
+            attributeprovider.mapping = {};
             var AttributeProvider = (function () {
                 function AttributeProvider() {
                     this.useMin = false;
@@ -22,7 +23,7 @@ var ho;
                 AttributeProvider.prototype.getAttribute = function (name) {
                     var _this = this;
                     return new Promise(function (resolve, reject) {
-                        var src = _this.resolve(name);
+                        var src = attributeprovider.mapping[name] || _this.resolve(name);
                         var script = document.createElement('script');
                         script.onload = function () {
                             //Component.register(window[name]);

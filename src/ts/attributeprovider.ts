@@ -3,9 +3,12 @@
 module ho.components.attributeprovider {
     import Promise = ho.promise.Promise;
 
+    export let mapping: {[name:string]:string} = {};
+
     export class AttributeProvider {
 
         useMin: boolean = false;
+
 
         resolve(name: string): string {
             if(ho.components.dir) {
@@ -13,7 +16,7 @@ module ho.components.attributeprovider {
             }
 
             name = name.split('.').join('/');
-            
+
             return this.useMin ?
                 `attributes/${name}.min.js` :
                 `attributes/${name}.js`;
@@ -21,7 +24,7 @@ module ho.components.attributeprovider {
 
         getAttribute(name: string): Promise<typeof Attribute, string> {
             return new Promise<typeof Attribute, any>((resolve, reject) => {
-                let src = this.resolve(name);
+                let src = mapping[name] || this.resolve(name);
                 let script = document.createElement('script');
                 script.onload = function() {
                     //Component.register(window[name]);
