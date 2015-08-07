@@ -15,6 +15,7 @@
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true
     },
+    "compileOnSave": false,
     "filesGlob": [
         "./**/*.ts",
         "./**/*.tsx",

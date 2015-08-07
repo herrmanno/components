@@ -1,5 +1,5 @@
-/// <reference path="bower_components/ho-watch/dist/d.ts/watch.d.ts" />
 /// <reference path="bower_components/ho-promise/dist/promise.d.ts" />
+/// <reference path="bower_components/ho-classloader/dist/classloader.d.ts" />
 declare module ho.components {
     /**
         Baseclass for Attributes.
@@ -52,6 +52,7 @@ declare module ho.components.registry {
     class Registry {
         private components;
         private attributes;
+        private componentLoader;
         register(ca: typeof Component | typeof Attribute): void;
         run(): Promise<any, any>;
         initComponent(component: typeof Component, element?: HTMLElement | Document): Promise<any, any>;

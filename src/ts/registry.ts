@@ -1,5 +1,6 @@
 /// <reference path="./componentsprovider.ts"/>
 /// <reference path="./attributeprovider.ts"/>
+/// <reference path="../../bower_components/ho-classloader/dist/classloader.d.ts"/>
 
 module ho.components.registry {
     import Promise = ho.promise.Promise;
@@ -8,6 +9,12 @@ module ho.components.registry {
 
         private components: Array<typeof Component> = [];
         private attributes: Array<typeof Attribute> = [];
+
+        private componentLoader = new ho.classloader.ClassLoader({
+            urlTemplate: 'components/${name}.js',
+            useDir: true
+        });
+
 
 
         public register(ca: typeof Component | typeof Attribute): void {
@@ -76,6 +83,21 @@ module ho.components.registry {
         public loadComponent(name: string): Promise<typeof Component, string> {
             let self = this;
 
+            return this.componentLoader.load({
+                name,
+                super: "ho.components.Component"
+            })
+            .then(classes => {
+                classes.map(c => {
+                    self.register(<typeof Component>c);
+                });
+                return classes.pop();
+            })
+
+
+            /*
+            let self = this;
+
             return this.getParentOfComponent(name)
             .then((parent) => {
                 if(self.hasComponent(parent) || parent === 'ho.components.Component')
@@ -90,6 +112,7 @@ module ho.components.registry {
                 return component;
             });
             //return this.options.componentProvider.getComponent(name)
+            */
         }
 
         public loadAttribute(name: string): Promise<typeof Attribute, string> {

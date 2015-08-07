@@ -21,6 +21,7 @@
   ],
   "dependencies": {
     "ho-promise": "latest",
-    "ho-watch": "latest"
+    "ho-watch": "latest",
+    "ho-classloader": "latest"
   }
 }
