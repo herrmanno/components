@@ -23,7 +23,7 @@
     ],
     "files": [
         "./App/app.ts",
-        "./Todo/MyTodoBox/MyTodoBox.ts",
+        "./MyTodoBox/MyTodoBox.ts",
         "./TodoBox/TodoBox.ts",
         "./TodoCount/TodoCount.ts",
         "./TodoInput/TodoInput.ts",

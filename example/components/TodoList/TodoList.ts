@@ -9,7 +9,7 @@ class TodoList extends ho.components.Component {
 	style =
 		`li {
 			color: red;
-			max-width: 100px;
+			max-width: 180px;
 		}`;
 
 	init() {
@@ -28,5 +28,6 @@ class TodoList extends ho.components.Component {
 		Store.todos.splice(index, 1);
 		Store.update();
 	}
+	
 
 }

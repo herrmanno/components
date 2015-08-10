@@ -53,6 +53,7 @@ declare module ho.components.registry {
         private components;
         private attributes;
         private componentLoader;
+        private attributeLoader;
         register(ca: typeof Component | typeof Attribute): void;
         run(): Promise<any, any>;
         initComponent(component: typeof Component, element?: HTMLElement | Document): Promise<any, any>;
@@ -62,9 +63,6 @@ declare module ho.components.registry {
         getAttribute(name: string): typeof Attribute;
         loadComponent(name: string): Promise<typeof Component, string>;
         loadAttribute(name: string): Promise<typeof Attribute, string>;
-        protected getParentOfComponent(name: string): Promise<string, any>;
-        protected getParentOfAttribute(name: string): Promise<string, any>;
-        protected getParentOfClass(path: string): Promise<string, any>;
     }
     let instance: Registry;
 }

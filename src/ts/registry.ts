@@ -15,6 +15,11 @@ module ho.components.registry {
             useDir: true
         });
 
+        private attributeLoader = new ho.classloader.ClassLoader({
+            urlTemplate: 'attributes/${name}.js',
+            useDir: true
+        });
+
 
 
         public register(ca: typeof Component | typeof Attribute): void {
@@ -30,7 +35,7 @@ module ho.components.registry {
         public run(): Promise<any, any> {
             let initComponent: (c: typeof Component)=>Promise<any, any> = this.initComponent.bind(this);
             let promises: Array<Promise<any, any>> = this.components.map((c)=>{
-                return initComponent(c);
+                return initComponent(<any>c);
             });
 
             return Promise.all(promises);
@@ -85,7 +90,7 @@ module ho.components.registry {
 
             return this.componentLoader.load({
                 name,
-                super: "ho.components.Component"
+                super: ["ho.components.Component"]
             })
             .then(classes => {
                 classes.map(c => {
@@ -116,6 +121,22 @@ module ho.components.registry {
         }
 
         public loadAttribute(name: string): Promise<typeof Attribute, string> {
+
+            let self = this;
+
+            return this.attributeLoader.load({
+                name,
+                super: ["ho.components.Attribute", "ho.components.WatchAttribute"]
+            })
+            .then(classes => {
+                classes.map(c => {
+                    self.register(<typeof Attribute>c);
+                });
+                return classes.pop();
+            })
+
+
+            /*
             let self = this;
 
             return this.getParentOfAttribute(name)
@@ -131,6 +152,7 @@ module ho.components.registry {
                 self.register(attribute);
                 return attribute;
             });
+            */
 
             /*
             let self = this;
@@ -143,6 +165,8 @@ module ho.components.registry {
             });
             */
         }
+
+        /*
 
         protected getParentOfComponent(name: string): Promise<string, any> {
             return this.getParentOfClass(ho.components.componentprovider.instance.resolve(name));
@@ -179,6 +203,8 @@ module ho.components.registry {
 
             });
         }
+
+        */
 
     }
 
