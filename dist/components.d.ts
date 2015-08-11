@@ -78,7 +78,15 @@ declare module ho.components {
 declare module ho.components {
     function run(): ho.promise.Promise<any, any>;
     function register(c: typeof Component | typeof Attribute): void;
-    let dir: boolean;
+}
+declare module ho.components.htmlprovider {
+    import Promise = ho.promise.Promise;
+    class HtmlProvider {
+        private cache;
+        resolve(name: string): string;
+        getHTML(name: string): Promise<string, string>;
+    }
+    let instance: HtmlProvider;
 }
 declare module ho.components.registry {
     import Promise = ho.promise.Promise;
@@ -102,15 +110,6 @@ declare module ho.components.registry {
         loadAttribute(name: string): Promise<typeof Attribute, string>;
     }
     let instance: Registry;
-}
-declare module ho.components.htmlprovider {
-    import Promise = ho.promise.Promise;
-    class HtmlProvider {
-        private cache;
-        resolve(name: string): string;
-        getHTML(name: string): Promise<string, string>;
-    }
-    let instance: HtmlProvider;
 }
 declare module ho.components.renderer {
     class Renderer {

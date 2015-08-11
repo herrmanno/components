@@ -11,5 +11,4 @@ module ho.components {
 		ho.components.registry.instance.register(c);
 	}
 
-	export let dir: boolean = false;
 }
