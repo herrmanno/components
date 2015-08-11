@@ -22,15 +22,13 @@
         "!./node_modules/**/*"
     ],
     "files": [
-        "./attribute.ts",
-        "./attributeprovider.ts",
-        "./components.ts",
-        "./componentsprovider.ts",
-        "./htmlprovider.ts",
-        "./main.ts",
-        "./registry.ts",
-        "./renderer.ts",
-        "./styler.ts",
-        "./temp.ts"
+        "./components/attribute.ts",
+        "./components/component.ts",
+        "./components/components.ts",
+        "./components/htmlprovider/htmlprovider.ts",
+        "./components/registry/registry.ts",
+        "./components/renderer/renderer.ts",
+        "./components/styler/styler.ts",
+        "./components/temp/temp.ts"
     ]
 }

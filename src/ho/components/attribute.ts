@@ -1,6 +1,3 @@
-/// <reference path="../../bower_components/ho-watch/dist/d.ts/watch.d.ts"/>
-/// <reference path="../../bower_components/ho-promise/dist/promise.d.ts"/>
-
 module ho.components {
 
 	import Promise = ho.promise.Promise;

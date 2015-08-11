@@ -1,7 +1,3 @@
-/// <reference path="./componentsprovider.ts"/>
-/// <reference path="./attributeprovider.ts"/>
-/// <reference path="../../bower_components/ho-classloader/dist/classloader.d.ts"/>
-
 module ho.components.registry {
     import Promise = ho.promise.Promise;
 

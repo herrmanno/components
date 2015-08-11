@@ -1,4 +1,3 @@
-
 module ho.components.temp {
 		var c: number = -1;
 		var data: any[] = [];

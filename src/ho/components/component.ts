@@ -1,17 +1,8 @@
-/// <reference path="./main"/>
-/// <reference path="./registry"/>
-/// <reference path="./htmlprovider.ts"/>
-/// <reference path="./renderer.ts"/>
-/// <reference path="./attribute.ts"/>
-/// <reference path="./styler.ts"/>
-/// <reference path="../../bower_components/ho-promise/dist/promise.d.ts"/>
-
 module ho.components {
 
-    import Registry = ho.components.registry.instance;
+    import Promise = ho.promise.Promise;
     import HtmlProvider = ho.components.htmlprovider.instance;
     import Renderer = ho.components.renderer.instance;
-    import Promise = ho.promise.Promise;
 
     export interface ComponentElement extends HTMLElement {
         component?: Component;
@@ -91,7 +82,7 @@ module ho.components {
         public render(): void {
     		Renderer.render(this);
 
-    		Registry.initElement(this.element)
+    		ho.components.registry.instance.initElement(this.element)
             .then(function() {
 
                 this.initChildren();
@@ -158,7 +149,7 @@ module ho.components {
         private initChildren(): void {
             let childs = this.element.querySelectorAll('*');
     		for(let c = 0; c < childs.length; c++) {
-    			let child = childs[c];
+    			let child: Element = <Element>childs[c];
     			if(child.id) {
     				this.children[child.id] = child;
     			}
@@ -171,7 +162,7 @@ module ho.components {
         private initAttributes(): void {
             this.attributes
             .forEach((a) => {
-                let attr = Registry.getAttribute(a);
+                let attr = ho.components.registry.instance.getAttribute(a);
                 Array.prototype.forEach.call(this.element.querySelectorAll(`*[${a}]`), (e: HTMLElement) => {
                     let val = e.hasOwnProperty(a) ? e[a] : e.getAttribute(a);
                     if(typeof val === 'string' && val === '')
@@ -184,19 +175,19 @@ module ho.components {
         private loadRequirements() {
     		let components: any[] = this.requires
             .filter((req) => {
-                return !Registry.hasComponent(req);
+                return !ho.components.registry.instance.hasComponent(req);
             })
             .map((req) => {
-                return Registry.loadComponent(req);
+                return ho.components.registry.instance.loadComponent(req);
             });
 
 
             let attributes: any[] = this.attributes
             .filter((req) => {
-                return !Registry.hasAttribute(req);
+                return !ho.components.registry.instance.hasAttribute(req);
             })
             .map((req) => {
-                return Registry.loadAttribute(req);
+                return ho.components.registry.instance.loadAttribute(req);
             });
 
 
@@ -207,14 +198,14 @@ module ho.components {
 
         /*
         static register(c: typeof Component): void {
-            Registry.register(c);
+            ho.components.registry.instance.register(c);
         }
         */
 
         /*
         static run(opt?: any) {
-            Registry.setOptions(opt);
-            Registry.run();
+            ho.components.registry.instance.setOptions(opt);
+            ho.components.registry.instance.run();
         }
         */
 

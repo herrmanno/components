@@ -2,19 +2,9 @@
     "version": "1.5.0-beta",
     "compilerOptions": {
         "target": "es5",
-        "module": "commonjs",
         "sourceMap": true,
         "inlineSourceMap": true,
-        "inlineSources": true,
-        "isolatedModules": false,
-        "experimentalDecorators": true,
-        "emitDecoratorMetadata": true,
-        "declaration": false,
-        "noImplicitAny": false,
-        "removeComments": true,
-        "noLib": false,
-        "preserveConstEnums": true,
-        "suppressImplicitAnyIndexErrors": true
+        "inlineSources": true
     },
     "filesGlob": [
         "./**/*.ts",
@@ -23,7 +13,7 @@
     ],
     "files": [
         "./App/app.ts",
-        "./MyTodoBox/MyTodoBox.ts",
+        "./Todo/MyTodoBox/MyTodoBox.ts",
         "./TodoBox/TodoBox.ts",
         "./TodoCount/TodoCount.ts",
         "./TodoInput/TodoInput.ts",

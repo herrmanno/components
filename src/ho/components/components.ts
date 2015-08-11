@@ -1,4 +1,6 @@
-/// <reference path="./registry.ts"/>
+/// <reference path="../../../bower_components/ho-promise/dist/promise.d.ts"/>
+/// <reference path="../../../bower_components/ho-classloader/dist/classloader.d.ts"/>
+/// <reference path="../../../bower_components/ho-watch/dist/watch.d.ts"/>
 
 module ho.components {
 	export function run(): ho.promise.Promise<any, any> {

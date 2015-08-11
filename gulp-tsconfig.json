@@ -1,0 +1,21 @@
+{
+    "version": "1.5.0-beta",
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "noEmitOnError": false,
+        "sortOutput": true,
+        "removeComments": false
+    },
+    "compileOnSave": false,
+    "files": [
+        "src/ho/components/temp/temp.ts",
+        "src/ho/components/styler/styler.ts",
+        "src/ho/components/renderer/renderer.ts",
+        "src/ho/components/htmlprovider/htmlprovider.ts",
+        "src/ho/components/attribute.ts",
+        "src/ho/components/component.ts",
+        "src/ho/components/registry/registry.ts",
+        "src/ho/components/components.ts"
+    ]
+}

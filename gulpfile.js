@@ -4,11 +4,12 @@ var uglify = require('gulp-uglify');
 var rename = require('gulp-rename');
 var typescript = require('gulp-typescript');
 var sourcemap = require('gulp-sourcemaps');
+var concat = require('gulp-concat');
 
 
 var src = {
-    ts: ['src/ts/**/*.ts'],
-    js: ['src/js/**/*.js']
+    ts: ['src/**/*.ts'],
+    js: ['src/**/*.js']
 };
 
 var name = 'ho-components';
@@ -22,6 +23,7 @@ gulp.task('clean', function() {
     return del.sync(dist+'/d.ts', {force: true}) && del.sync(dist, {force: true});
 });
 
+/*
 gulp.task('package', ['clean'], function() {
     return gulp.src('src/ts/components.ts')
     .pipe(sourcemap.init())
@@ -32,6 +34,19 @@ gulp.task('package', ['clean'], function() {
     }))
     .pipe(sourcemap.write())
     .pipe(gulp.dest(dist));
+});
+*/
+
+var tsProject = typescript.createProject('gulp-tsconfig.json');
+gulp.task('package', ['clean'], function() {
+    var tsResult = tsProject.src()
+        .pipe(sourcemap.init())
+        .pipe(typescript(tsProject));
+
+  return tsResult.js
+        .pipe(concat(entry))
+        .pipe(sourcemap.write())
+        .pipe(gulp.dest(dist));
 });
 
 

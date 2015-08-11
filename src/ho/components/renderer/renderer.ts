@@ -1,8 +1,4 @@
-/// <reference path="./registry.ts"/>
-/// <reference path="./temp"/>
-
 module ho.components.renderer {
-    import Registry = ho.components.registry.instance;
 
     interface NodeHtml {
         root: Node;
@@ -68,7 +64,7 @@ module ho.components.renderer {
 					selfClosing = isVoid || tag[tag.length-1] === '/';
 					repeat = !!tag.match(this.r.repeat);
 
-					if(selfClosing && Registry.hasComponent(type)) {
+					if(selfClosing && ho.components.registry.instance.hasComponent(type)) {
 						selfClosing = false;
 						tag = tag.substr(0, tag.length-1) + " ";
 

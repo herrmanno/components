@@ -4,7 +4,7 @@ class App extends ho.components.Component {
 
     attributes = ['Centered']
 
-    requires = ["MyTodoBox"];
+    requires = ["Todo.MyTodoBox"];
 
     html = "<MyTodoBox centered='40'/>";
 
