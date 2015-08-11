@@ -91,6 +91,9 @@ declare module ho.components.htmlprovider {
 }
 declare module ho.components.registry {
     import Promise = ho.promise.Promise;
+    let mapping: {
+        [key: string]: string;
+    };
     class Registry {
         private components;
         private attributes;

@@ -1,6 +1,8 @@
 module ho.components.registry {
     import Promise = ho.promise.Promise;
 
+    export let mapping: {[key:string]:string} = {};
+
     export class Registry {
 
         private components: Array<typeof Component> = [];
@@ -86,6 +88,7 @@ module ho.components.registry {
 
             return this.componentLoader.load({
                 name,
+                url: mapping[name],
                 super: ["ho.components.Component"]
             })
             .then(classes => {
@@ -122,6 +125,7 @@ module ho.components.registry {
 
             return this.attributeLoader.load({
                 name,
+                url: mapping[name],
                 super: ["ho.components.Attribute", "ho.components.WatchAttribute"]
             })
             .then(classes => {
