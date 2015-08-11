@@ -2,6 +2,7 @@ module ho.components.registry {
     import Promise = ho.promise.Promise;
 
     export let mapping: {[key:string]:string} = {};
+    export let useDir = true;
 
     export class Registry {
 
@@ -10,12 +11,12 @@ module ho.components.registry {
 
         private componentLoader = new ho.classloader.ClassLoader({
             urlTemplate: 'components/${name}.js',
-            useDir: true
+            useDir
         });
 
         private attributeLoader = new ho.classloader.ClassLoader({
             urlTemplate: 'attributes/${name}.js',
-            useDir: true
+            useDir
         });
 
 
