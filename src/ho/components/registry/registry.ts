@@ -124,11 +124,13 @@ module ho.components.registry {
         public loadAttribute(name: string): Promise<typeof Attribute, string> {
 
             let self = this;
+            let base = ["ho.components.Attribute", "ho.components.WatchAttribute"];
+            let sup = this.attributes.map(a => {return Attribute.getName(a)}).concat(base)
 
             return this.attributeLoader.load({
                 name,
                 url: mapping[name],
-                super: ["ho.components.Attribute", "ho.components.WatchAttribute"]
+                super: sup
             })
             .then(classes => {
                 classes.map(c => {
