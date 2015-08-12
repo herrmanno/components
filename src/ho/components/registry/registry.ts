@@ -86,11 +86,12 @@ module ho.components.registry {
 
         public loadComponent(name: string): Promise<typeof Component, string> {
             let self = this;
+            let sup = this.components.map(c => {return Component.getName(c)}).concat(["ho.components.Component"])
 
             return this.componentLoader.load({
                 name,
                 url: mapping[name],
-                super: ["ho.components.Component"]
+                super: sup
             })
             .then(classes => {
                 classes.map(c => {
