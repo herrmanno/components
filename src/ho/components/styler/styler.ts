@@ -16,10 +16,22 @@ module ho.components.styler {
 
 	class Styler implements IStyler {
 		public applyStyle(component: Component, css = component.style): void {
+			let id = 'style-'+component.name;
+			if(!!document.querySelector(`style[id="${id}"]`))
+				return;
+
+			let style = component.style.replace('this', component.name);
+			let tag = document.createElement('style');
+			tag.id = id;
+			tag.innerHTML = '\n' + style + '\n';
+			document.head.appendChild(tag);
+
+			/*
 			let style = this.parseStyle(component.style);
 			style.forEach(s => {
 				this.applyStyleBlock(component, s);
 			});
+			*/
 		}
 
 		protected applyStyleBlock(component: Component, style: StyleBlock): void {
